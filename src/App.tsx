@@ -1,4 +1,4 @@
-import Form from "./Components/Formpage";
+import Form from "./Components/FormPage";
 import Map from "./Components/Map";
 import CardComponent from "./Components/Cards";
 import Container from "@mui/material/Container";

@@ -1,31 +1,16 @@
+import { LatLngExpression } from "leaflet";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { FormType } from "../types/form";
 import "./map.css";
 import { Componente } from "./teste";
 
-interface Company {
-  Company: string;
-  UniqueID: string;
-  FantasyName: string;
-  address: {
-    ZipCode: string;
-    Street: string;
-    Number: string;
-    District: string;
-    Complement?: string;
-    City: string;
-    State: string;
-    Country: string;
-  };
-  coordinates: [number, number];
-}
-
-function Map() {
-  const [companies, setCompanies] = useState<Company[]>([]);
+export function Map() {
+  const [companies, setCompanies] = useState<FormType[]>([]);
 
   const loadCompanies = () => {
     try {
-      const storedCompanies: Company[] = JSON.parse(
+      const storedCompanies: FormType[] = JSON.parse(
         localStorage.getItem("empresas") || "[]"
       );
       setCompanies(storedCompanies);
@@ -46,23 +31,22 @@ function Map() {
     return () => clearInterval(interval);
   }, []);
   return (
-    <div className="map-container">
-      <MapContainer
-        center={[-30.0387433, -51.2227375]}
-        zoom={15}
-        style={{ height: "400px", width: "100%" }}
-      >
-        <Componente />
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    <MapContainer
+      center={[-30.0387433, -51.2227375]}
+      zoom={15}
+      style={{ height: "100%", width: "100%" }}
+    >
+      <Componente />
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {companies.map((company, index) => (
+        <Marker
+          key={index}
+          position={company.coordinates as LatLngExpression}
         />
-        {companies.map((company, index) => (
-          <Marker key={index} position={company.coordinates} />
-        ))}
-      </MapContainer>
-    </div>
+      ))}
+    </MapContainer>
   );
 }
-
-export default Map;

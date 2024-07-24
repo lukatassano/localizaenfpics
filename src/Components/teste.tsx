@@ -18,10 +18,7 @@ export function Componente() {
 
   useMapEvents({
     moveend: () => {
-      console.log("asd", mMap.getBounds());
-
       const bounds = mMap.getBounds();
-
       const northEast = bounds.getNorthEast();
       const southWest = bounds.getSouthWest();
 
