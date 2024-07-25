@@ -4,18 +4,18 @@ import axios from "axios";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { formSchema, FormType } from "../types/form";
+import { personalDataSchema, PersonalDataFormType } from "../types/form";
 
 export function FormComponent() {
-  const { handleSubmit, control } = useForm<FormType>({
-    resolver: zodResolver(formSchema),
+  const { handleSubmit, control } = useForm<PersonalDataFormType>({
+    resolver: zodResolver(personalDataSchema),
   });
 
   const navigate = useNavigate();
 
   const [, setCoordinates] = useState<[number, number] | null>(null);
 
-  const handleFormSubmit = async (data: FormType) => {
+  const handleFormSubmit = async (data: PersonalDataFormType) => {
     try {
       const address = data.address.zipCode;
       try {

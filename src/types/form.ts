@@ -1,32 +1,10 @@
 import { z } from "zod";
 
-export const formSchema = z.object({
+export const personalDataSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
-  cpf: z
-    .string()
-    .min(13, "CPF é obrigatório")
-    .max(14, "Máximo de 11 caracteres"),
-  address: z.object({
-    zipCode: z
-      .string()
-      .min(7, "CEP é obrigatório")
-      .max(8, "Máximo de 8 caracteres"),
-    street: z.string().min(1, "Rua é obrigatória"),
-    district: z.string().min(1, "Bairro é obrigatório"),
-    complement: z.string(),
-    city: z.string().min(1, "Cidade é obrigatório"),
-    state: z.string().min(1, "Estado é obrigatório"),
-    country: z.string().min(1, "País é obrigatório"),
-    number: z.string().min(1, "Numero é obrigatório"),
-  }),
-  phone: z
-    .string()
-    .min(13, "Celular é obrigatório")
-    .max(14, "Máximo de 11 caracteres")
-    .regex(
-      /^\d{3}\.\d{3}\.\d{3}\.-\d{2}$/,
-      "CPF deve estar no formato XXX.XXX.XXX-XX"
-    ),
+  cpf: z.string()
+    .min(14, "CPF é obrigatório"),
+  phone: z.string().min(14, "Telefone é obrigatório"),
   email: z.string().email().optional(),
   instagram: z.string().optional(),
   facebook: z.string().optional(),
@@ -36,7 +14,26 @@ export const formSchema = z.object({
   gender: z.string().optional(),
   coren: z.string().optional(),
   coordinates: z.array(z.number()).optional(),
-  exactLocation: z.boolean().default(false)
 });
 
-export type FormType = z.infer<typeof formSchema>;
+export const addressSchema = z.object({
+  zipCode: z
+    .string()
+    .min(9, "CEP é obrigatório"),
+  street: z.string().min(1, "Rua é obrigatória"),
+  district: z.string().min(1, "Bairro é obrigatório"),
+  complement: z.string(),
+  city: z.string().min(1, "Cidade é obrigatório"),
+  state: z.string().min(1, "Estado é obrigatório"),
+  country: z.string().min(1, "País é obrigatório"),
+  number: z.string().min(1, "Numero é obrigatório"),
+  exactLocation: z.boolean().default(false)
+})
+
+export const completeSchema = personalDataSchema.extend({
+  address: addressSchema
+})
+
+export type PersonalDataFormType = z.infer<typeof personalDataSchema>;
+export type AddressFormType = z.infer<typeof addressSchema>;
+export type CompleteFormType = z.infer<typeof completeSchema>;

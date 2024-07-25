@@ -1,16 +1,16 @@
 import { LatLngExpression } from "leaflet";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import { FormType } from "../types/form";
+import { PersonalDataFormType } from "../types/form";
 import "./map.css";
 import { Componente } from "./teste";
 
 export function Map() {
-  const [companies, setCompanies] = useState<FormType[]>([]);
+  const [companies, setCompanies] = useState<PersonalDataFormType[]>([]);
 
   const loadCompanies = () => {
     try {
-      const storedCompanies: FormType[] = JSON.parse(
+      const storedCompanies: PersonalDataFormType[] = JSON.parse(
         localStorage.getItem("empresas") || "[]"
       );
       setCompanies(storedCompanies);

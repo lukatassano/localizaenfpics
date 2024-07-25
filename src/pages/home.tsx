@@ -17,19 +17,19 @@ import { Add } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useAtomValue } from "jotai";
 import { coordsAtom } from "../Components/teste";
-import { FormType } from "../types/form";
+import { PersonalDataFormType } from "../types/form";
 import { LatLngExpression } from "leaflet";
 
 export function Home() {
   const navigate = useNavigate();
 
-  const [companies, setCompanies] = useState<FormType[]>([]);
-  const [enfergay, setEnfergay] = useState<FormType | undefined>();
+  const [companies, setCompanies] = useState<PersonalDataFormType[]>([]);
+  const [enfergay, setEnfergay] = useState<PersonalDataFormType | undefined>();
   const coords = useAtomValue(coordsAtom);
 
   const loadCompanies = () => {
     try {
-      const storedCompanies: FormType[] = JSON.parse(
+      const storedCompanies: PersonalDataFormType[] = JSON.parse(
         localStorage.getItem("empresas") || "[]"
       );
       setCompanies(storedCompanies);
