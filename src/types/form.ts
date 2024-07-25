@@ -13,7 +13,6 @@ export const personalDataSchema = z.object({
   birthday: z.string().optional(),
   gender: z.string().optional(),
   coren: z.string().optional(),
-  coordinates: z.array(z.number()).optional(),
 });
 
 export const addressSchema = z.object({
@@ -27,7 +26,8 @@ export const addressSchema = z.object({
   state: z.string().min(1, "Estado é obrigatório"),
   country: z.string().min(1, "País é obrigatório"),
   number: z.string().min(1, "Numero é obrigatório"),
-  exactLocation: z.boolean().default(false)
+  coordinates: z.array(z.number()).optional(),
+  exactLocation: z.boolean().default(false),
 })
 
 export const completeSchema = personalDataSchema.extend({

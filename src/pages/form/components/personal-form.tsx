@@ -1,37 +1,18 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, Fade, TextField } from "@mui/material";
-import { useAtom, useSetAtom } from "jotai";
-import { Controller, useForm } from "react-hook-form";
+import { Box, TextField } from "@mui/material";
+import { Controller, useFormContext } from "react-hook-form";
 import InputMask from "react-input-mask";
-import { personalDataFormAtom } from "../../../atoms/form";
-import { handleNextAtom } from "../../../atoms/stepper";
-import { PersonalDataFormType, personalDataSchema } from "../../../types/form";
+import { PersonalDataFormType } from "../../../types/form";
 
 export function PersonalForm() {
-  const handleNext = useSetAtom(handleNextAtom);
-  const [personalDataForm, setPersonalDataForm] = useAtom(personalDataFormAtom);
-
-  const { handleSubmit, control } = useForm<PersonalDataFormType>({
-    resolver: zodResolver(personalDataSchema),
-    defaultValues: {
-      ...personalDataForm,
-    },
-  });
-
-  function handleFormSubmit(data: PersonalDataFormType) {
-    setPersonalDataForm(data);
-    handleNext();
-  }
+  const { control } = useFormContext<PersonalDataFormType>();
 
   return (
     <Box
-      component="form"
       display="flex"
       flexDirection="column"
       gap={2}
       paddingTop={2}
       width={500}
-      onSubmit={handleSubmit(handleFormSubmit)}
     >
       <Controller
         name="name"
@@ -107,23 +88,34 @@ export function PersonalForm() {
           />
         )}
       />
+
       <Controller
         name="birthday"
         control={control}
         defaultValue=""
         render={({ field, fieldState }) => (
-          <TextField
-            {...field}
-            type="date"
-            label="Data de nascimento"
-            variant="outlined"
-            error={!!fieldState.error}
-            helperText={fieldState.error?.message}
-            fullWidth
-            size="small"
-          />
+          <InputMask
+            mask="99/99/9999"
+            maskChar="_"
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+          >
+            {() => (
+              <TextField
+                {...field}
+                label="Data de nascimento"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
+                fullWidth
+                size="small"
+              />
+            )}
+          </InputMask>
         )}
       />
+
       <Controller
         name="gender"
         control={control}
@@ -190,12 +182,6 @@ export function PersonalForm() {
           />
         )}
       />
-
-      <Box display="flex" flex={1} gap={1}>
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Próximo
-        </Button>
-      </Box>
     </Box>
   );
 }
