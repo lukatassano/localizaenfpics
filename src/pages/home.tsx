@@ -5,26 +5,21 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardHeader,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   Fab,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { useAtom } from "jotai";
-import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { filteredNursesAtom } from "../atoms/nurse";
+import { filteredNursesAtom, selectedNurseAtom } from "../atoms/nurse";
 import { Map } from "../Components/map";
-import { PersonalDataFormType } from "../types/form";
+import { SelectedNurse } from "../Components/selected-nurse";
 
 export function Home() {
   const navigate = useNavigate();
 
   const [filteredNurses] = useAtom(filteredNursesAtom);
-  const [enfergay, setEnfergay] = useState<PersonalDataFormType | undefined>();
+  const [, setSelectedNurse] = useAtom(selectedNurseAtom);
 
   return (
     <Box display="flex" height="100vh">
@@ -34,7 +29,7 @@ export function Home() {
         sx={{
           width: 300,
           height: "100vh",
-          backgroundColor: "rgba(0, 0, 0, 0.1)",
+          backgroundColor: "rgba(0, 0, 0, 0.4)",
           position: "fixed",
           top: 0,
           right: 0,
@@ -44,45 +39,48 @@ export function Home() {
           justifyContent: "center",
         }}
       >
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap={1}
-          p={2}
-          overflow="auto"
-        >
-          {filteredNurses.map((nurse) => (
-            <Card>
-              <CardContent>
-                <Typography
-                  sx={{ fontSize: 14 }}
-                  color="text.secondary"
-                  gutterBottom
-                  noWrap
-                >
-                  {nurse.name}
-                </Typography>
-                <Typography variant="body2" noWrap>
-                  Rua: {nurse.address.street} {nurse.address.number}
-                </Typography>
-                <Typography variant="body2" noWrap>
-                  Bairro: {nurse.address.district}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small" onClick={() => setEnfergay(nurse)}>
-                  Ver mais
-                </Button>
-              </CardActions>
-            </Card>
-          ))}
+        <Box display="flex" flexDirection="column" overflow="auto">
+          <Box bgcolor="white" p={2} maxHeight={120}>
+            <Typography variant="h6">
+              {filteredNurses.length} Enfermeiros encontrados nessa região
+            </Typography>
+          </Box>
+          <Box display="flex" flexDirection="column" padding={2} gap={1}>
+            {filteredNurses.map((nurse) => (
+              <Box flex={1}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Typography
+                      sx={{ fontSize: 14 }}
+                      color="text.secondary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {nurse.name}
+                    </Typography>
+                    <Typography variant="body2" noWrap>
+                      Rua: {nurse.address.street} {nurse.address.number}
+                    </Typography>
+                    <Typography variant="body2" noWrap>
+                      Bairro: {nurse.address.district}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button
+                      size="small"
+                      onClick={() => setSelectedNurse(nurse)}
+                    >
+                      Ver mais
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Box>
+            ))}
+          </Box>
         </Box>
       </Box>
 
-      <Dialog open={!!enfergay} onClose={() => setEnfergay(undefined)}>
-        <DialogTitle>{enfergay?.name}</DialogTitle>
-        <DialogContent></DialogContent>
-      </Dialog>
+      <SelectedNurse />
 
       <Tooltip title="Cadastrar" arrow>
         <Fab
