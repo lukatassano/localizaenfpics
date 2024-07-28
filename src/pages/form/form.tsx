@@ -75,12 +75,12 @@ export const Form = () => {
     });
 
     handleBack();
-    navigate("/");
+    navigate("/pmapa");
   }
 
   return (
     <FormProvider {...methods}>
-      <Dialog open maxWidth="xl" onClose={() => navigate("/")}>
+      <Dialog open maxWidth="xl" onClose={() => navigate("/pmapa")}>
         <DialogTitle>Cadastro</DialogTitle>
         <DialogContent>
           <Box component="form" onSubmit={handleSubmit(handleSubmitForm)}>

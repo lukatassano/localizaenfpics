@@ -85,7 +85,7 @@ export function Home() {
       <Tooltip title="Cadastrar" arrow>
         <Fab
           color="primary"
-          onClick={() => navigate("/cadastro")}
+          onClick={() => navigate("/pmapa/cadastro")}
           sx={{ position: "fixed", bottom: 20, right: 20, zIndex: 2000 }}
         >
           <Add />
