@@ -6,8 +6,8 @@ export function AppRoutes() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />}>
-          <Route path="/cadastro" element={<Form />} />
+        <Route path="pmapa" element={<Home />}>
+          <Route path="cadastro" element={<Form />} />
         </Route>
       </Routes>
     </Router>
