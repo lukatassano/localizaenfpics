@@ -1,6 +1,12 @@
 import { atom, useAtom } from "jotai";
 import { useMap, useMapEvents } from "react-leaflet";
-import { filteredNursesAtom, nursesAtom } from "../atoms/nurse";
+import {
+  filteredNursesAtom,
+  nursesAtom,
+  selectedCoordsAtom,
+} from "../atoms/nurse";
+import { useEffect } from "react";
+import { LatLng, LatLngExpression } from "leaflet";
 
 export const coordsAtom = atom({
   northEast: {
@@ -16,10 +22,23 @@ export const coordsAtom = atom({
 export function DynamicMarkersFilter() {
   const [nurses] = useAtom(nursesAtom);
   const [, setFilteredNurses] = useAtom(filteredNursesAtom);
+  const [selectedCoords, setSelectedCoords] = useAtom(selectedCoordsAtom);
   const mMap = useMap();
 
-  useMapEvents({
-    moveend: () => {
+  const updateFilteredNurses = () => {
+    if (selectedCoords !== undefined) {
+      const filteredNurses = nurses.filter((nurse) => {
+        const { lat, lng } = selectedCoords;
+        const [nurseLat, nurseLng] = nurse.address.coordinates || [-1, -1];
+
+        return (
+          lat.toPrecision(4) === nurseLat.toPrecision(4) &&
+          lng.toPrecision(4) === nurseLng.toPrecision(4)
+        );
+      });
+
+      setFilteredNurses(filteredNurses);
+    } else {
       const bounds = mMap.getBounds();
       const northEast = bounds.getNorthEast();
       const southWest = bounds.getSouthWest();
@@ -37,9 +56,17 @@ export function DynamicMarkersFilter() {
 
         return false;
       });
-
       setFilteredNurses(filteredNurses);
-    },
+    }
+  };
+
+  useEffect(() => {
+    updateFilteredNurses();
+  }, [selectedCoords]);
+
+  useMapEvents({
+    moveend: updateFilteredNurses,
+    click: () => setSelectedCoords(undefined),
   });
 
   return <></>;

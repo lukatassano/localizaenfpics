@@ -1,11 +1,19 @@
+import { Box } from "@mui/material";
 import { useAtom } from "jotai";
-import { LatLngExpression } from "leaflet";
-import { Circle, MapContainer, TileLayer } from "react-leaflet";
-import { nursesAtom } from "../atoms/nurse";
+import { LatLngExpression, LeafletMouseEvent } from "leaflet";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
+import {
+  nursesAtom,
+  selectedCoordsAtom,
+  selectedNurseAtom,
+} from "../atoms/nurse";
 import { DynamicMarkersFilter } from "./dynamic-markers-filter";
 import "./map.css";
 
 export function Map() {
+  const [, setSelectedCoords] = useAtom(selectedCoordsAtom);
+  const [, setSelectedNurse] = useAtom(selectedNurseAtom);
   const [nurses] = useAtom(nursesAtom);
 
   return (
@@ -19,12 +27,23 @@ export function Map() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {nurses.map((nurse) => (
-        <Circle
-          center={nurse.address.coordinates as LatLngExpression}
-          radius={400}
-        />
-      ))}
+      <MarkerClusterGroup
+        singleMarkerMode
+        removeOutsideVisibleBounds
+        maxClusterRadius={400}
+        onClick={(e: LeafletMouseEvent) => setSelectedCoords(e.latlng)}
+      >
+        {nurses.map((nurse) => (
+          <Box>
+            <Marker
+              position={nurse.address.coordinates as LatLngExpression}
+              eventHandlers={{
+                click: () => setSelectedNurse(nurse),
+              }}
+            />
+          </Box>
+        ))}
+      </MarkerClusterGroup>
     </MapContainer>
   );
 }
