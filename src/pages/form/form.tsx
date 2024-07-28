@@ -10,6 +10,7 @@ import {
   StepLabel,
   Stepper,
 } from "@mui/material";
+import { ref, set } from "firebase/database";
 import { useAtom } from "jotai";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,7 @@ import {
   handleBackAtom,
   handleNextAtom,
 } from "../../atoms/stepper";
+import { db } from "../../firebase.config";
 import { CompleteFormType, completeSchema } from "../../types/form";
 import { searchLocationByAddress } from "../../utils/search-location";
 import { AddressForm } from "./components/address-form";
@@ -64,6 +66,9 @@ export const Form = () => {
         coordinates: [parseFloat(lat), parseFloat(lon)],
       },
     };
+
+    const nurseKey = newNurse.cpf.replaceAll(".", "").replace("-", "");
+    set(ref(db, `nurses/${nurseKey}`), newNurse);
 
     setNurses((state) => {
       return [...state, newNurse];
