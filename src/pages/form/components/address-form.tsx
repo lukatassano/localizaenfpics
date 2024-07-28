@@ -1,6 +1,6 @@
 import { Box, TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
-import InputMask from "react-input-mask";
+import { InputMaskCorrect } from "../../../Components/input-mask-correct";
 
 export function AddressForm() {
   const { control } = useFormContext();
@@ -35,7 +35,7 @@ export function AddressForm() {
         control={control}
         defaultValue=""
         render={({ field, fieldState }) => (
-          <InputMask
+          <InputMaskCorrect
             mask="99999-999"
             maskChar=""
             value={field.value}

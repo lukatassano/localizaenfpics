@@ -6,7 +6,6 @@ import {
   selectedCoordsAtom,
 } from "../atoms/nurse";
 import { useEffect } from "react";
-import { LatLng, LatLngExpression } from "leaflet";
 
 export const coordsAtom = atom({
   northEast: {
