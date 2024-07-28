@@ -1,7 +1,7 @@
 import { Box, TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
-import InputMask from "react-input-mask";
 import { PersonalDataFormType } from "../../../types/form";
+import { InputMaskCorrect } from "../../../Components/input-mask-correct";
 
 export function PersonalForm() {
   const { control } = useFormContext<PersonalDataFormType>();
@@ -41,7 +41,7 @@ export function PersonalForm() {
           },
         }}
         render={({ field, fieldState }) => (
-          <InputMask
+          <InputMaskCorrect
             mask="999.999.999-99"
             maskChar=""
             value={field.value}
@@ -68,7 +68,7 @@ export function PersonalForm() {
         control={control}
         defaultValue=""
         render={({ field, fieldState }) => (
-          <InputMask
+          <InputMaskCorrect
             mask="(99) 99999-9999"
             maskChar=""
             value={field.value}
@@ -94,7 +94,7 @@ export function PersonalForm() {
         control={control}
         defaultValue=""
         render={({ field, fieldState }) => (
-          <InputMask
+          <InputMaskCorrect
             mask="99/99/9999"
             maskChar="_"
             value={field.value}
@@ -112,7 +112,7 @@ export function PersonalForm() {
                 size="small"
               />
             )}
-          </InputMask>
+          </InputMaskCorrect>
         )}
       />
 
