@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const personalDataSchema = z.object({
+  uuid: z.string().optional(),
   name: z.string().min(1, "Nome é obrigatório"),
   cpf: z.string()
     .min(14, "CPF é obrigatório"),

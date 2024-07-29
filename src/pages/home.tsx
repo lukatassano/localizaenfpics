@@ -10,13 +10,14 @@ import {
   Typography,
 } from "@mui/material";
 import { useAtom } from "jotai";
-import { Outlet, useNavigate } from "react-router-dom";
+import { formOpenAtom } from "../atoms/form";
 import { filteredNursesAtom, selectedNurseAtom } from "../atoms/nurse";
 import { Map } from "../Components/map";
 import { SelectedNurse } from "../Components/selected-nurse";
+import { Form } from "./form/form";
 
 export function Home() {
-  const navigate = useNavigate();
+  const [, setFormOpen] = useAtom(formOpenAtom);
 
   const [filteredNurses] = useAtom(filteredNursesAtom);
   const [, setSelectedNurse] = useAtom(selectedNurseAtom);
@@ -46,8 +47,8 @@ export function Home() {
             </Typography>
           </Box>
           <Box display="flex" flexDirection="column" padding={2} gap={1}>
-            {filteredNurses.map((nurse) => (
-              <Box flex={1}>
+            {filteredNurses.map((nurse, index) => (
+              <Box flex={1} key={Date.now() + index}>
                 <Card variant="outlined">
                   <CardContent>
                     <Typography
@@ -85,13 +86,14 @@ export function Home() {
       <Tooltip title="Cadastrar" arrow>
         <Fab
           color="primary"
-          onClick={() => navigate("/pmapa/cadastro")}
+          onClick={() => setFormOpen(true)}
           sx={{ position: "fixed", bottom: 20, right: 20, zIndex: 2000 }}
         >
           <Add />
         </Fab>
       </Tooltip>
-      <Outlet />
+
+      <Form />
     </Box>
   );
 }

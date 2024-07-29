@@ -34,7 +34,7 @@ export function Map() {
         onClick={(e: LeafletMouseEvent) => setSelectedCoords(e.latlng)}
       >
         {nurses.map((nurse) => (
-          <Box>
+          <Box key={nurse.uuid}>
             <Marker
               position={nurse.address.coordinates as LatLngExpression}
               eventHandlers={{

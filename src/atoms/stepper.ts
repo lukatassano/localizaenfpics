@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-export const activeStepAtom = atom(0);
+export const activeStepAtom = atom(0.0);
 
 export const handleNextAtom = atom(
   (get) => get(activeStepAtom),

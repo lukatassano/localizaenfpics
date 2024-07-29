@@ -1,4 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowBack, ArrowForward, Save } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
@@ -12,13 +14,16 @@ import {
 } from "@mui/material";
 import { ref, set } from "firebase/database";
 import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { v4 } from "uuid";
+import { formOpenAtom } from "../../atoms/form";
 import { nursesAtom } from "../../atoms/nurse";
 import {
   activeStepAtom,
   handleBackAtom,
   handleNextAtom,
+  handleResetAtom,
 } from "../../atoms/stepper";
 import { db } from "../../firebase.config";
 import { CompleteFormType, completeSchema } from "../../types/form";
@@ -29,17 +34,20 @@ import { PersonalForm } from "./components/personal-form";
 const steps = ["Dados pessoais", "Endereço"];
 
 export const Form = () => {
-  const navigate = useNavigate();
+  const [formOpen, setFormOpen] = useAtom(formOpenAtom);
   const [activeStep] = useAtom(activeStepAtom);
+  const [, handleReset] = useAtom(handleResetAtom);
   const [, handleBack] = useAtom(handleBackAtom);
   const [, handleNext] = useAtom(handleNextAtom);
   const [, setNurses] = useAtom(nursesAtom);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const methods = useForm<CompleteFormType>({
     resolver: zodResolver(completeSchema),
   });
 
-  const { handleSubmit, trigger } = methods;
+  const { handleSubmit, trigger, reset } = methods;
 
   const nextStep = async () => {
     if (activeStep !== 0) {
@@ -53,6 +61,7 @@ export const Form = () => {
   };
 
   async function handleSubmitForm(form: CompleteFormType) {
+    setIsLoading(true);
     const result = await searchLocationByAddress(form.address);
     if (!result) {
       return;
@@ -61,26 +70,31 @@ export const Form = () => {
     const { lat, lon } = result;
     const newNurse: CompleteFormType = {
       ...form,
+      uuid: v4(),
       address: {
         ...form.address,
         coordinates: [parseFloat(lat), parseFloat(lon)],
       },
     };
 
-    const nurseKey = newNurse.cpf.replaceAll(".", "").replace("-", "");
-    set(ref(db, `nurses/${nurseKey}`), newNurse);
-
+    set(ref(db, `nurses/${newNurse.uuid}`), newNurse);
     setNurses((state) => {
       return [...state, newNurse];
     });
 
     handleBack();
-    navigate("/pmapa");
+    setFormOpen(false);
+    reset({});
+    setIsLoading(false);
   }
+
+  useEffect(() => {
+    handleReset();
+  }, []);
 
   return (
     <FormProvider {...methods}>
-      <Dialog open maxWidth="xl" onClose={() => navigate("/pmapa")}>
+      <Dialog open={formOpen} maxWidth="xl" onClose={() => setFormOpen(false)}>
         <DialogTitle>Cadastro</DialogTitle>
         <DialogContent>
           <Box component="form" onSubmit={handleSubmit(handleSubmitForm)}>
@@ -122,18 +136,23 @@ export const Form = () => {
                   fullWidth
                   variant="outlined"
                   disabled={activeStep === 0}
+                  startIcon={<ArrowBack />}
                 >
                   Voltar
                 </Button>
-                <Button
+
+                <LoadingButton
+                  loading={isLoading}
                   type={activeStep === 1 ? "submit" : "button"}
                   variant="contained"
+                  loadingPosition="start"
                   color="primary"
-                  fullWidth
+                  endIcon={activeStep === 0 ? <ArrowForward /> : <Save />}
                   onClick={nextStep}
+                  fullWidth
                 >
                   {activeStep === 0 ? "Próximo" : "Enviar"}
-                </Button>
+                </LoadingButton>
               </Box>
             </Box>
           </Box>

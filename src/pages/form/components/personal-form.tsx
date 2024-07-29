@@ -1,7 +1,7 @@
 import { Box, TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
+import ReactInputMask from "react-input-mask";
 import { PersonalDataFormType } from "../../../types/form";
-import { InputMaskCorrect } from "../../../Components/input-mask-correct";
 
 export function PersonalForm() {
   const { control } = useFormContext<PersonalDataFormType>();
@@ -41,25 +41,24 @@ export function PersonalForm() {
           },
         }}
         render={({ field, fieldState }) => (
-          <InputMaskCorrect
+          <ReactInputMask
             mask="999.999.999-99"
             maskChar=""
             value={field.value}
             onChange={field.onChange}
             onBlur={field.onBlur}
-            children={() => (
-              <TextField
-                {...field}
-                placeholder="999.999.999-99"
-                label="CPF"
-                variant="outlined"
-                error={!!fieldState.error}
-                helperText={fieldState.error?.message}
-                fullWidth
-                size="small"
-              />
-            )}
-          />
+          >
+            <TextField
+              {...field}
+              placeholder="999.999.999-99"
+              label="CPF"
+              variant="outlined"
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+              fullWidth
+              size="small"
+            />
+          </ReactInputMask>
         )}
       />
 
@@ -68,24 +67,23 @@ export function PersonalForm() {
         control={control}
         defaultValue=""
         render={({ field, fieldState }) => (
-          <InputMaskCorrect
+          <ReactInputMask
             mask="(99) 99999-9999"
             maskChar=""
             value={field.value}
             onChange={field.onChange}
             onBlur={field.onBlur}
-            children={() => (
-              <TextField
-                {...field}
-                label="Telefone"
-                variant="outlined"
-                error={!!fieldState.error}
-                helperText={fieldState.error?.message}
-                fullWidth
-                size="small"
-              />
-            )}
-          />
+          >
+            <TextField
+              {...field}
+              label="Telefone"
+              variant="outlined"
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+              fullWidth
+              size="small"
+            />
+          </ReactInputMask>
         )}
       />
 
@@ -94,25 +92,22 @@ export function PersonalForm() {
         control={control}
         defaultValue=""
         render={({ field, fieldState }) => (
-          <InputMaskCorrect
+          <ReactInputMask
             mask="99/99/9999"
-            maskChar="_"
             value={field.value}
             onChange={field.onChange}
             onBlur={field.onBlur}
           >
-            {() => (
-              <TextField
-                {...field}
-                label="Data de nascimento"
-                variant="outlined"
-                error={!!fieldState.error}
-                helperText={fieldState.error?.message}
-                fullWidth
-                size="small"
-              />
-            )}
-          </InputMaskCorrect>
+            <TextField
+              {...field}
+              label="Data de nascimento"
+              variant="outlined"
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+              fullWidth
+              size="small"
+            />
+          </ReactInputMask>
         )}
       />
 
