@@ -14,6 +14,10 @@ export const personalDataSchema = z.object({
   birthday: z.string().optional(),
   gender: z.string().optional(),
   coren: z.string().optional(),
+  specialties: z.array(z.string()).min(1, "Selecione pelo menos uma especialidade").default([]),
+  lgpd: z.boolean().default(false).refine(val => val === true, {
+    message: "Você precisa concordar com os termos para enviar"
+  })
 });
 
 export const addressSchema = z.object({
@@ -26,7 +30,7 @@ export const addressSchema = z.object({
   city: z.string().min(1, "Cidade é obrigatório"),
   state: z.string().min(1, "Estado é obrigatório"),
   country: z.string().min(1, "País é obrigatório"),
-  number: z.string().min(1, "Numero é obrigatório"),
+  number: z.string(),
   coordinates: z.array(z.number()).optional(),
   exactLocation: z.boolean().default(false),
 })

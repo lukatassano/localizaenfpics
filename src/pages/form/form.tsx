@@ -7,7 +7,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Slide,
+  Fade,
   Step,
   StepLabel,
   Stepper,
@@ -30,8 +30,9 @@ import { CompleteFormType, completeSchema } from "../../types/form";
 import { searchLocationByAddress } from "../../utils/search-location";
 import { AddressForm } from "./components/address-form";
 import { PersonalForm } from "./components/personal-form";
+import { SpecialtiesForm } from "./components/specialties-form";
 
-const steps = ["Dados pessoais", "Endereço"];
+const steps = ["Dados pessoais", "Especialidade", "Endereço"];
 
 export const Form = () => {
   const [formOpen, setFormOpen] = useAtom(formOpenAtom);
@@ -49,15 +50,21 @@ export const Form = () => {
 
   const { handleSubmit, trigger, reset } = methods;
 
+  const showNextButton = activeStep < 2;
+
   const nextStep = async () => {
-    if (activeStep !== 0) {
-      return;
+    switch (activeStep) {
+      case 0:
+        if (!(await trigger(["name", "cpf", "phone"]))) return;
+        break;
+      case 1:
+        if (!(await trigger(["specialties"]))) return;
+        break;
+      default:
+        return;
     }
 
-    const isStepValid = await trigger(["name", "cpf", "phone"]);
-    if (isStepValid) {
-      handleNext();
-    }
+    handleNext();
   };
 
   async function handleSubmitForm(form: CompleteFormType) {
@@ -82,7 +89,7 @@ export const Form = () => {
       return [...state, newNurse];
     });
 
-    handleBack();
+    handleReset();
     setFormOpen(false);
     reset({});
     setIsLoading(false);
@@ -108,26 +115,27 @@ export const Form = () => {
               </Stepper>
             </Box>
             <Box display="flex" gap={2} flexDirection="column">
-              <Box width={500} overflow="hidden" display="flex">
-                <Slide in={activeStep === 0} timeout={300} direction="right">
-                  <Box
-                    sx={{
-                      display: [0, 0.4].includes(activeStep) ? "flex" : "none",
-                    }}
-                  >
+              <Box
+                overflow="hidden"
+                display="flex"
+                minHeight={470}
+                minWidth={510}
+              >
+                <Fade in={activeStep === 0} timeout={300} unmountOnExit>
+                  <Box>
                     <PersonalForm />
                   </Box>
-                </Slide>
-                <Slide
-                  in={activeStep === 1}
-                  mountOnEnter
-                  timeout={300}
-                  direction="left"
-                >
+                </Fade>
+                <Fade in={activeStep === 1} unmountOnExit>
+                  <Box>
+                    <SpecialtiesForm />
+                  </Box>
+                </Fade>
+                <Fade in={activeStep === 2} unmountOnExit>
                   <Box>
                     <AddressForm />
                   </Box>
-                </Slide>
+                </Fade>
               </Box>
 
               <Box display="flex" flex={1} gap={1}>
@@ -143,15 +151,15 @@ export const Form = () => {
 
                 <LoadingButton
                   loading={isLoading}
-                  type={activeStep === 1 ? "submit" : "button"}
+                  type={showNextButton ? "button" : "submit"}
                   variant="contained"
-                  loadingPosition="start"
+                  loadingPosition="end"
                   color="primary"
-                  endIcon={activeStep === 0 ? <ArrowForward /> : <Save />}
+                  endIcon={showNextButton ? <ArrowForward /> : <Save />}
                   onClick={nextStep}
                   fullWidth
                 >
-                  {activeStep === 0 ? "Próximo" : "Enviar"}
+                  {showNextButton ? "Próximo" : "Enviar"}
                 </LoadingButton>
               </Box>
             </Box>

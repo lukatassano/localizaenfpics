@@ -8,7 +8,7 @@ export const handleNextAtom = atom(
     set(activeStepAtom, get(activeStepAtom) + 0.4)
     setTimeout(() => {
       set(activeStepAtom, get(activeStepAtom) + 0.6)
-    }, 300);
+    }, 500);
   }
 );
 
@@ -18,7 +18,7 @@ export const handleBackAtom = atom(
     set(activeStepAtom, get(activeStepAtom) - 0.4)
     setTimeout(() => {
       set(activeStepAtom, get(activeStepAtom) - 0.6)
-    }, 300);
+    }, 500);
   }
 );
 

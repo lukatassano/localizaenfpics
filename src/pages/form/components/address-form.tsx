@@ -1,9 +1,20 @@
-import { Box, TextField } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 import ReactInputMask from "react-input-mask";
+import { CompleteFormType } from "../../../types/form";
 
 export function AddressForm() {
-  const { control } = useFormContext();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<CompleteFormType>();
 
   // const zipCode = watch("address.zipCode");
 
@@ -22,13 +33,7 @@ export function AddressForm() {
   // }, [zipCode]);
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      width={500}
-      paddingTop={2}
-      gap={2}
-    >
+    <Box display="flex" flexDirection="column" paddingTop={2} gap={2}>
       <Controller
         name="address.zipCode"
         control={control}
@@ -173,6 +178,50 @@ export function AddressForm() {
           />
         )}
       />
+      <Box pl={1} display="flex" flexDirection="column" maxWidth={500}>
+        <Controller
+          name="address.exactLocation"
+          control={control}
+          defaultValue={false}
+          render={({ field }) => (
+            <Tooltip
+              title="Ativar essa opção habilita um botão de rotas para o seu endereço"
+              arrow
+            >
+              <FormControlLabel
+                control={<Checkbox {...field} checked={field.value} />}
+                label="Compartilhar localização exata"
+              />
+            </Tooltip>
+          )}
+        />
+        {errors.address?.exactLocation && (
+          <Typography variant="caption" color="error">
+            {errors.address.exactLocation.message}
+          </Typography>
+        )}
+        <Controller
+          name="lgpd"
+          control={control}
+          defaultValue={false}
+          render={({ field }) => (
+            <FormControlLabel
+              sx={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "flex-start",
+              }}
+              control={<Checkbox {...field} checked={field.value} />}
+              label="Concordo em compartilhar meus dados pessoais e informações fornecidas para fins de divulgação e exposição do meu perfil neste projeto, conforme descrito na política de privacidade"
+            />
+          )}
+        />
+        {errors.lgpd && (
+          <Typography variant="caption" color="error">
+            {errors.lgpd.message}
+          </Typography>
+        )}
+      </Box>
     </Box>
   );
 }

@@ -1,10 +1,10 @@
 import { Box, TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 import ReactInputMask from "react-input-mask";
-import { PersonalDataFormType } from "../../../types/form";
+import { CompleteFormType } from "../../../types/form";
 
 export function PersonalForm() {
-  const { control } = useFormContext<PersonalDataFormType>();
+  const { control } = useFormContext<CompleteFormType>();
 
   return (
     <Box
@@ -21,7 +21,7 @@ export function PersonalForm() {
         render={({ field, fieldState }) => (
           <TextField
             {...field}
-            label="Nome"
+            label="Nome *"
             variant="outlined"
             error={!!fieldState.error}
             helperText={fieldState?.error?.message}
@@ -51,7 +51,7 @@ export function PersonalForm() {
             <TextField
               {...field}
               placeholder="999.999.999-99"
-              label="CPF"
+              label="CPF *"
               variant="outlined"
               error={!!fieldState.error}
               helperText={fieldState.error?.message}
@@ -76,7 +76,7 @@ export function PersonalForm() {
           >
             <TextField
               {...field}
-              label="Telefone"
+              label="Telefone *"
               variant="outlined"
               error={!!fieldState.error}
               helperText={fieldState.error?.message}

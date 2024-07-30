@@ -4,8 +4,10 @@ import {
   filteredNursesAtom,
   nursesAtom,
   selectedCoordsAtom,
+  specialtiesFilterAtom,
 } from "../atoms/nurse";
 import { useEffect } from "react";
+import { CompleteFormType } from "../types/form";
 
 export const coordsAtom = atom({
   northEast: {
@@ -22,11 +24,15 @@ export function DynamicMarkersFilter() {
   const [nurses] = useAtom(nursesAtom);
   const [, setFilteredNurses] = useAtom(filteredNursesAtom);
   const [selectedCoords, setSelectedCoords] = useAtom(selectedCoordsAtom);
+  const [specialtiesFilter] = useAtom(specialtiesFilterAtom);
+
   const mMap = useMap();
 
   const updateFilteredNurses = () => {
+    let filteredNurses: CompleteFormType[] = [];
+
     if (selectedCoords !== undefined) {
-      const filteredNurses = nurses.filter((nurse) => {
+      filteredNurses = nurses.filter((nurse) => {
         const { lat, lng } = selectedCoords;
         const [nurseLat, nurseLng] = nurse.address.coordinates || [-1, -1];
 
@@ -35,14 +41,12 @@ export function DynamicMarkersFilter() {
           lng.toPrecision(4) === nurseLng.toPrecision(4)
         );
       });
-
-      setFilteredNurses(filteredNurses);
     } else {
       const bounds = mMap.getBounds();
       const northEast = bounds.getNorthEast();
       const southWest = bounds.getSouthWest();
 
-      const filteredNurses = nurses.filter((nurse) => {
+      filteredNurses = nurses.filter((nurse) => {
         const coords = nurse.address.coordinates;
         if (coords) {
           const lat = coords[0];
@@ -55,13 +59,22 @@ export function DynamicMarkersFilter() {
 
         return false;
       });
-      setFilteredNurses(filteredNurses);
     }
+
+    if (specialtiesFilter.length > 0) {
+      filteredNurses = filteredNurses.filter((nurse) =>
+        (nurse.specialties || []).some((specialty) =>
+          specialtiesFilter.includes(specialty)
+        )
+      );
+    }
+
+    setFilteredNurses(filteredNurses);
   };
 
   useEffect(() => {
     updateFilteredNurses();
-  }, [selectedCoords]);
+  }, [selectedCoords, specialtiesFilter]);
 
   useMapEvents({
     moveend: updateFilteredNurses,
