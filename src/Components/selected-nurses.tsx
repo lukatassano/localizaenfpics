@@ -15,6 +15,7 @@ import {
   specialtiesFilterAtom,
 } from "../atoms/nurse";
 import { specialties } from "../data/specialties";
+import { SelectedNursesContainer } from "./styles";
 
 export function SelectedNurses() {
   const [filteredNurses] = useAtom(filteredNursesAtom);
@@ -22,11 +23,10 @@ export function SelectedNurses() {
   const [, setSpecialtiesFilter] = useAtom(specialtiesFilterAtom);
 
   return (
-    <Box
+    <SelectedNursesContainer
       display="flex"
       flexDirection="column"
       overflow="auto"
-      flex={0.2}
       minWidth={300}
     >
       <Box bgcolor="white" p={2} maxHeight={120}>
@@ -79,6 +79,6 @@ export function SelectedNurses() {
           </Box>
         ))}
       </Box>
-    </Box>
+    </SelectedNursesContainer>
   );
 }

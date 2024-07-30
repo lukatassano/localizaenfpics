@@ -9,12 +9,31 @@ import {
 import { Controller, useFormContext } from "react-hook-form";
 import ReactInputMask from "react-input-mask";
 import { CompleteFormType } from "../../../types/form";
+import { useAtom } from "jotai";
+import {
+  privacyPolicyOpenAtom,
+  showPolicyAtom,
+} from "../../../atoms/politica-privacidade";
 
 export function AddressForm() {
   const {
     control,
     formState: { errors },
+    watch,
   } = useFormContext<CompleteFormType>();
+
+  const [, setOpen] = useAtom(privacyPolicyOpenAtom);
+  const [, setShowPolicy] = useAtom(showPolicyAtom);
+
+  const lgpd = watch("lgpd");
+
+  function handleOpenPolicy() {
+    if (lgpd) {
+      return;
+    }
+    setOpen(true);
+    setShowPolicy(true);
+  }
 
   // const zipCode = watch("address.zipCode");
 
@@ -212,6 +231,7 @@ export function AddressForm() {
                 justifyContent: "flex-start",
               }}
               control={<Checkbox {...field} checked={field.value} />}
+              onClick={handleOpenPolicy}
               label="Concordo em compartilhar meus dados pessoais e informações fornecidas para fins de divulgação e exposição do meu perfil neste projeto, conforme descrito na política de privacidade"
             />
           )}

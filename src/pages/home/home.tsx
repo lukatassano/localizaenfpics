@@ -1,17 +1,19 @@
 import { Add } from "@mui/icons-material";
-import { Box, Fab, Tooltip } from "@mui/material";
+import { Fab, Tooltip } from "@mui/material";
 import { useAtom } from "jotai";
-import { formOpenAtom } from "../atoms/form";
-import { Map } from "../Components/map";
-import { SelectedNurse } from "../Components/selected-nurse";
-import { SelectedNurses } from "../Components/selected-nurses";
-import { Form } from "./form/form";
+import { formOpenAtom } from "../../atoms/form";
+import { Map } from "../../Components/map";
+import { PrivacyPolicyDialog } from "../../Components/politica-privacidade";
+import { SelectedNurse } from "../../Components/selected-nurse";
+import { SelectedNurses } from "../../Components/selected-nurses";
+import { Form } from "../form/form";
+import { Container } from "./styles";
 
 export function Home() {
   const [, setFormOpen] = useAtom(formOpenAtom);
 
   return (
-    <Box display="flex" maxHeight="100vh" overflow="hidden">
+    <Container>
       <Map />
       <SelectedNurses />
 
@@ -26,7 +28,9 @@ export function Home() {
         </Fab>
       </Tooltip>
 
+      <PrivacyPolicyDialog />
+
       <Form />
-    </Box>
+    </Container>
   );
 }

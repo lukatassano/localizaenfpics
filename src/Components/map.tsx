@@ -35,14 +35,15 @@ export function Map() {
       p={4}
     >
       <Typography variant="h4" sx={{ fontFamily: "Raleway" }}>
-        Localiza Enfermeiros Pics
+        Localiza Enfermeiros PICS
       </Typography>
       <MapContainer
         center={[-30.0387433, -51.2227375]}
         zoom={13}
+        className="leaflet-container"
         style={{
           flex: 1,
-          borderRadius: 24,
+          borderRadius: 8,
         }}
       >
         <DynamicMarkersFilter />

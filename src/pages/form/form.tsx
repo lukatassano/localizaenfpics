@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowBack, ArrowForward, Save } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, Close, Save } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
@@ -8,9 +8,12 @@ import {
   DialogContent,
   DialogTitle,
   Fade,
+  IconButton,
   Step,
   StepLabel,
   Stepper,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { ref, set } from "firebase/database";
 import { useAtom } from "jotai";
@@ -43,6 +46,9 @@ export const Form = () => {
   const [, setNurses] = useAtom(nursesAtom);
 
   const [isLoading, setIsLoading] = useState(false);
+  const theme = useTheme();
+
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const methods = useForm<CompleteFormType>({
     resolver: zodResolver(completeSchema),
@@ -101,11 +107,30 @@ export const Form = () => {
 
   return (
     <FormProvider {...methods}>
-      <Dialog open={formOpen} maxWidth="xl" onClose={() => setFormOpen(false)}>
-        <DialogTitle>Cadastro</DialogTitle>
+      <Dialog
+        open={formOpen}
+        maxWidth="xl"
+        fullScreen={fullScreen}
+        onClose={() => setFormOpen(false)}
+      >
+        <DialogTitle>
+          Cadastro
+          <IconButton
+            aria-label="close"
+            onClick={() => setFormOpen(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <Close />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <Box component="form" onSubmit={handleSubmit(handleSubmitForm)}>
-            <Box padding={2}>
+            <Box padding={0}>
               <Stepper activeStep={activeStep}>
                 {steps.map((label) => (
                   <Step key={label}>
