@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Checkbox,
   FormControlLabel,
@@ -6,14 +7,15 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useAtom } from "jotai";
 import { Controller, useFormContext } from "react-hook-form";
 import ReactInputMask from "react-input-mask";
-import { CompleteFormType } from "../../../types/form";
-import { useAtom } from "jotai";
 import {
   privacyPolicyOpenAtom,
   showPolicyAtom,
 } from "../../../atoms/politica-privacidade";
+import { streetTypes } from "../../../data/street-types";
+import { CompleteFormType } from "../../../types/form";
 
 export function AddressForm() {
   const {
@@ -80,19 +82,48 @@ export function AddressForm() {
 
       <Box display="flex" gap={1}>
         <Controller
+          name="address.type"
+          control={control}
+          defaultValue=""
+          render={({ field, fieldState }) => (
+            <Autocomplete
+              {...field}
+              sx={{ flex: 0.3 }}
+              options={streetTypes}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Tipo"
+                  variant="outlined"
+                  error={!!fieldState?.error}
+                  helperText={fieldState.error?.message}
+                  fullWidth
+                  size="small"
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                    }
+                  }}
+                />
+              )}
+              onChange={(_, value) => field.onChange(value || "")}
+            />
+          )}
+        />
+        <Controller
           name="address.street"
           control={control}
           defaultValue=""
           render={({ field, fieldState }) => (
             <TextField
               {...field}
-              label="Rua"
+              label="Logradouro"
               variant="outlined"
               error={!!fieldState?.error}
               helperText={fieldState.error?.message}
               fullWidth
               size="small"
-              sx={{ flex: 0.7 }}
+              sx={{ flex: 0.6 }}
             />
           )}
         />
@@ -108,7 +139,7 @@ export function AddressForm() {
               error={!!fieldState?.error}
               helperText={fieldState.error?.message}
               size="small"
-              sx={{ flex: 0.3 }}
+              sx={{ flex: 0.2 }}
             />
           )}
         />

@@ -1,12 +1,13 @@
 import { atom, useAtom } from "jotai";
+import { useEffect } from "react";
 import { useMap, useMapEvents } from "react-leaflet";
+import useSWR from "swr";
 import {
   filteredNursesAtom,
-  nursesAtom,
   selectedCoordsAtom,
   specialtiesFilterAtom,
 } from "../atoms/nurse";
-import { useEffect } from "react";
+import { listNurses } from "../service/nurse";
 import { CompleteFormType } from "../types/form";
 
 export const coordsAtom = atom({
@@ -21,7 +22,8 @@ export const coordsAtom = atom({
 });
 
 export function DynamicMarkersFilter() {
-  const [nurses] = useAtom(nursesAtom);
+  const { data: nurses } = useSWR(["nurses"], listNurses);
+
   const [, setFilteredNurses] = useAtom(filteredNursesAtom);
   const [selectedCoords, setSelectedCoords] = useAtom(selectedCoordsAtom);
   const [specialtiesFilter] = useAtom(specialtiesFilterAtom);
@@ -32,7 +34,7 @@ export function DynamicMarkersFilter() {
     let filteredNurses: CompleteFormType[] = [];
 
     if (selectedCoords !== undefined) {
-      filteredNurses = nurses.filter((nurse) => {
+      filteredNurses = (nurses || []).filter((nurse) => {
         const { lat, lng } = selectedCoords;
         const [nurseLat, nurseLng] = nurse.address.coordinates || [-1, -1];
 
@@ -46,7 +48,7 @@ export function DynamicMarkersFilter() {
       const northEast = bounds.getNorthEast();
       const southWest = bounds.getSouthWest();
 
-      filteredNurses = nurses.filter((nurse) => {
+      filteredNurses = (nurses || []).filter((nurse) => {
         const coords = nurse.address.coordinates;
         if (coords) {
           const lat = coords[0];

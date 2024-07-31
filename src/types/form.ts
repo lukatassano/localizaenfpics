@@ -24,6 +24,7 @@ export const addressSchema = z.object({
   zipCode: z
     .string()
     .min(9, "CEP é obrigatório"),
+  type: z.string().min(1, "Tipo é obrigatório"),
   street: z.string().min(1, "Rua é obrigatória"),
   district: z.string().min(1, "Bairro é obrigatório"),
   complement: z.string(),

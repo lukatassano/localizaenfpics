@@ -8,3 +8,11 @@ export const SelectedNursesContainer = styled(Box)(({ theme }) => ({
     flex: 1
   },
 }));
+
+export const SelectedNurseBox = styled(Box)(({ theme }) => ({
+  flexDirection: "row",
+
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: "column"
+  },
+}));

@@ -7,13 +7,7 @@ export function PersonalForm() {
   const { control } = useFormContext<CompleteFormType>();
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      gap={2}
-      paddingTop={2}
-      width={500}
-    >
+    <Box display="flex" flexDirection="column" gap={2} paddingTop={2} flex={1}>
       <Controller
         name="name"
         control={control}
@@ -26,6 +20,8 @@ export function PersonalForm() {
             error={!!fieldState.error}
             helperText={fieldState?.error?.message}
             size="small"
+            sx={{ flex: 1 }}
+            fullWidth
           />
         )}
       />
@@ -43,7 +39,6 @@ export function PersonalForm() {
         render={({ field, fieldState }) => (
           <ReactInputMask
             mask="999.999.999-99"
-            maskChar=""
             value={field.value}
             onChange={field.onChange}
             onBlur={field.onBlur}
@@ -69,7 +64,6 @@ export function PersonalForm() {
         render={({ field, fieldState }) => (
           <ReactInputMask
             mask="(99) 99999-9999"
-            maskChar=""
             value={field.value}
             onChange={field.onChange}
             onBlur={field.onBlur}

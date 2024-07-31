@@ -1,22 +1,32 @@
-import { Box, Chip, Typography } from "@mui/material";
+import { Box, Chip, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 import { CompleteFormType } from "../../../types/form";
 import { specialties } from "../../../data/specialties";
 
 export function SpecialtiesForm() {
+  const theme = useTheme();
+  const small = useMediaQuery(theme.breakpoints.down("sm"));
+
   const {
     control,
     formState: { errors },
   } = useFormContext<CompleteFormType>();
 
   return (
-    <Box display="flex" gap={2} flexDirection="column">
+    <Box
+      display="flex"
+      gap={2}
+      flexDirection="column"
+      flex={1}
+      pt={2}
+      maxWidth={500}
+    >
       <Typography>Selecione suas especialidades</Typography>
       <Controller
         name="specialties"
         control={control}
         render={({ field }) => (
-          <Box display="flex" flexWrap="wrap" gap={0.5} maxWidth={500}>
+          <Box display="flex" flexWrap="wrap" gap={0.5}>
             {specialties.map((specialty) => (
               <Box
                 key={specialty}
@@ -34,6 +44,8 @@ export function SpecialtiesForm() {
               >
                 <Chip
                   label={specialty}
+                  size={small ? "small" : "medium"}
+                  sx={{ fontSize: small ? 12 : 14 }}
                   color={
                     ((field.value as string[]) || []).includes(specialty)
                       ? "primary"
