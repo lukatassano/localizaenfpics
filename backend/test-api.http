@@ -1,0 +1,35 @@
+POST http://localhost:8080/api/nurse HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": 4,
+  "uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Maria Clara Silva",
+  "cpf": "123.456.789-01",
+  "phone": "+55 11 91234-5678",
+  "email": "maria.clara@example.com",
+  "instagram": "https://instagram.com/maria.clara",
+  "facebook": "https://facebook.com/maria.clara",
+  "twitter": "https://twitter.com/maria_clara",
+  "linkedin": "https://linkedin.com/in/mariaclara",
+  "birthday": "1990-05-15",
+  "gender": "Feminino",
+  "coren": "COREN123456",
+  "specialties": [
+    "Pediatria",
+    "Geriatria"
+  ],
+  "lgpd": "true",
+  "zipCode": "01000-000",
+  "type": "Residente",
+  "street": "Rua das Flores",
+  "district": "Jardim das Rosas",
+  "complement": "Apto 101",
+  "city": "S?o Paulo",
+  "state": "SP",
+  "country": "Brasil",
+  "number": "123",
+  "latitude": -23.55052,
+  "longitude": -46.633308,
+  "exactLocation": true
+}

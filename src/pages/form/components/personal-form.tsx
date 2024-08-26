@@ -112,7 +112,6 @@ export function PersonalForm() {
         render={({ field, fieldState }) => (
           <TextField
             {...field}
-            // type="date"
             label="Genero"
             variant="outlined"
             error={!!fieldState.error}
@@ -130,6 +129,23 @@ export function PersonalForm() {
           <TextField
             {...field}
             label="Numero do COREN"
+            variant="outlined"
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message}
+            fullWidth
+            size="small"
+          />
+        )}
+      />
+
+      <Controller
+        name="email"
+        control={control}
+        defaultValue=""
+        render={({ field, fieldState }) => (
+          <TextField
+            {...field}
+            label="Email"
             variant="outlined"
             error={!!fieldState.error}
             helperText={fieldState.error?.message}

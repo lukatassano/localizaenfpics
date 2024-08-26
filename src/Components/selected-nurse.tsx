@@ -1,4 +1,4 @@
-import { MapSharp, Phone, WhatsApp } from "@mui/icons-material";
+import { Close, MapSharp, Phone, WhatsApp } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -7,8 +7,12 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  IconButton,
+  Link,
   Tooltip,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useAtom } from "jotai";
 import { selectedNurseAtom } from "../atoms/nurse";
@@ -17,9 +21,14 @@ import { openWhatsApp } from "../utils/whatsapp";
 import { call } from "../utils/phone";
 import { openMaps } from "../utils/maps";
 import { SelectedNurseBox } from "./styles";
+import { isValidURL } from "../utils/is-valid-url";
 
 export function SelectedNurse() {
   const [selectedNurse, setSelectedNurse] = useAtom(selectedNurseAtom);
+
+  const theme = useTheme();
+
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   function handleCall(): void {
     if (!selectedNurse) {
@@ -58,45 +67,65 @@ export function SelectedNurse() {
   }`;
 
   return (
-    <Dialog open={!!selectedNurse} onClose={() => setSelectedNurse(undefined)}>
-      <DialogTitle>{selectedNurse?.name}</DialogTitle>
+    <Dialog
+      open={!!selectedNurse}
+      onClose={() => setSelectedNurse(undefined)}
+      fullScreen={fullScreen}
+    >
+      <DialogTitle>
+        {selectedNurse?.name}
+        <IconButton
+          aria-label="close"
+          onClick={() => setSelectedNurse(undefined)}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+      </DialogTitle>
       <DialogContent>
         <Box display="flex" gap={3} flexDirection="column">
-          <Box display="flex" gap={2}>
-            <Box>
-              <Typography color="GrayText">Endereço</Typography>
-              <Typography color="GrayText">Telefone</Typography>
-              <Typography color="GrayText">Bairro</Typography>
-              <Typography color="GrayText">Cidade</Typography>
-              {selectedNurse?.coren && (
+          <Box display="grid" gap={1} gridTemplateColumns="1fr 1fr">
+            <Typography color="GrayText">Endereço</Typography>
+            <Typography noWrap>{address}</Typography>
+
+            <Typography color="GrayText">Telefone</Typography>
+            <Typography noWrap>{selectedNurse?.phone}</Typography>
+
+            <Typography color="GrayText">Bairro</Typography>
+            <Typography noWrap>{selectedNurse?.address.district}</Typography>
+
+            <Typography color="GrayText">Cidade</Typography>
+            <Typography noWrap>{selectedNurse?.address.city}</Typography>
+
+            {selectedNurse?.coren && (
+              <>
                 <Typography color="GrayText">COREN</Typography>
-              )}
-              {(selectedNurse?.specialties || []).length ? (
-                <Typography color="GrayText">Especialidades</Typography>
-              ) : (
-                <></>
-              )}
-            </Box>
-            <Box maxWidth={240} minWidth={100}>
-              <Typography noWrap>{address}</Typography>
-              <Typography noWrap>{selectedNurse?.phone}</Typography>
-              <Typography noWrap>{selectedNurse?.address.district}</Typography>
-              <Typography noWrap>{selectedNurse?.address.city}</Typography>
-              {selectedNurse?.coren && (
                 <Typography noWrap>{selectedNurse?.coren}</Typography>
-              )}
-              <Box display="flex" gap={0.3} flexWrap="wrap">
-                {(selectedNurse?.specialties || []).map((specialty) => (
-                  <Chip
-                    key={specialty}
-                    label={specialty}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                  />
-                ))}
-              </Box>
-            </Box>
+              </>
+            )}
+            {(selectedNurse?.specialties || []).length ? (
+              <>
+                <Typography color="GrayText">Especialidades</Typography>
+                <Box display="flex" gap={0.3} flexWrap="wrap">
+                  {(selectedNurse?.specialties || []).map((specialty) => (
+                    <Chip
+                      key={specialty}
+                      label={specialty}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
+                  ))}
+                </Box>
+              </>
+            ) : (
+              <></>
+            )}
           </Box>
 
           {showSocialMedias ? (
@@ -105,23 +134,47 @@ export function SelectedNurse() {
                 <Typography variant="caption">Redes sociais</Typography>
               </Divider>
 
-              <Box display="flex" gap={8}>
-                <Box>
-                  {selectedNurse?.instagram && (
+              <Box display="grid" gap={1} gridTemplateColumns="1fr 1fr">
+                {selectedNurse?.email && (
+                  <>
+                    <Typography color="GrayText">Email</Typography>
+                    <Typography noWrap>{selectedNurse?.email}</Typography>
+                  </>
+                )}
+                {selectedNurse?.instagram && (
+                  <>
                     <Typography color="GrayText">Instagram</Typography>
-                  )}
-                  {selectedNurse?.facebook && (
+                    {isValidURL(selectedNurse.instagram) ? (
+                      <Link
+                        href={selectedNurse.instagram}
+                        target="_blank"
+                        rel="noopener"
+                        noWrap
+                      >
+                        {selectedNurse.instagram}
+                      </Link>
+                    ) : (
+                      <Typography noWrap>{selectedNurse?.instagram}</Typography>
+                    )}
+                  </>
+                )}
+                {selectedNurse?.facebook && (
+                  <>
                     <Typography color="GrayText">Facebook</Typography>
-                  )}
-                </Box>
-                <Box>
-                  {selectedNurse?.instagram && (
-                    <Typography noWrap>{selectedNurse?.instagram}</Typography>
-                  )}
-                  {selectedNurse?.facebook && (
-                    <Typography noWrap>{selectedNurse?.facebook}</Typography>
-                  )}
-                </Box>
+                    {isValidURL(selectedNurse.facebook) ? (
+                      <Link
+                        href={selectedNurse.facebook}
+                        target="_blank"
+                        rel="noopener"
+                        noWrap
+                      >
+                        {selectedNurse.facebook}
+                      </Link>
+                    ) : (
+                      <Typography noWrap>{selectedNurse.facebook}</Typography>
+                    )}
+                  </>
+                )}
               </Box>
             </Box>
           ) : (
