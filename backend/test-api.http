@@ -4,9 +4,9 @@ Content-Type: application/json
 {
   "uuid": "550e8400-e29b-41d4-a716-446655440000",
   "name": "Maria Clara Silvaa",
-  "cpf": "123.456.789-10",
+  "cpf": "123.456.789-14",
   "phone": "+55 11 91234-5678",
-  "email": "maria.clara@example.com",
+  "email": "maria.clara3@example.com",
   "instagram": "https://instagram.com/maria.clara",
   "facebook": "https://facebook.com/maria.clara",
   "twitter": "https://twitter.com/maria_clara",
