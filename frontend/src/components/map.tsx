@@ -68,11 +68,16 @@ export function Map() {
           onClick={(e: LeafletMouseEvent) => setSelectedCoords(e.latlng)}
           showCoverageOnHover={true}
         >
-          {(specialtiesFilter.length ? filteredNurses : nurses || []).map(
+          {(specialtiesFilter.length ? filteredNurses : nurses?.data || []).map(
             (nurse) => (
               <Box key={nurse.uuid}>
                 <Marker
-                  position={nurse.address.coordinates as LatLngExpression}
+                  position={
+                    [
+                      Number(nurse.latitude),
+                      Number(nurse.longitude),
+                    ] as LatLngExpression
+                  }
                   eventHandlers={{
                     click: () => setSelectedNurse(nurse),
                   }}

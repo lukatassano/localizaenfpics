@@ -1,8 +1,8 @@
 import axios from "axios";
-import { AddressFormType } from "../types/form";
+import { FormType } from "../types/form";
 import { Location } from "../types/address";
 
-export async function searchLocationByAddress(address: AddressFormType) {
+export async function searchLocationByAddress(address: FormType) {
   const street = `${address.type} ${address.street}${typeof address.number === "number" ? ` ${address.number}` : ""}` 
   const { data } = await axios.get<Location[]>(
     "https://nominatim.openstreetmap.org/search",

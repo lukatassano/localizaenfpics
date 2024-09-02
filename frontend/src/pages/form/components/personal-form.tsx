@@ -1,10 +1,10 @@
 import { Box, TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 import ReactInputMask from "react-input-mask";
-import { CompleteFormType } from "../../../types/form";
+import { FormType } from "../../../types/form";
 
 export function PersonalForm() {
-  const { control } = useFormContext<CompleteFormType>();
+  const { control } = useFormContext<FormType>();
 
   return (
     <Box display="flex" flexDirection="column" gap={2} paddingTop={2} flex={1}>

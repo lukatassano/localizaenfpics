@@ -15,14 +15,14 @@ import {
   showPolicyAtom,
 } from "../../../atoms/politica-privacidade";
 import { streetTypes } from "../../../data/street-types";
-import { CompleteFormType } from "../../../types/form";
+import { FormType } from "../../../types/form";
 
 export function AddressForm() {
   const {
     control,
     formState: { errors },
     watch,
-  } = useFormContext<CompleteFormType>();
+  } = useFormContext<FormType>();
 
   const [, setOpen] = useAtom(privacyPolicyOpenAtom);
   const [, setShowPolicy] = useAtom(showPolicyAtom);
@@ -56,7 +56,7 @@ export function AddressForm() {
   return (
     <Box display="flex" flexDirection="column" paddingTop={2} gap={2}>
       <Controller
-        name="address.zipCode"
+        name="zipCode"
         control={control}
         defaultValue=""
         render={({ field, fieldState }) => (
@@ -82,7 +82,7 @@ export function AddressForm() {
 
       <Box display="flex" gap={1}>
         <Controller
-          name="address.type"
+          name="type"
           control={control}
           defaultValue=""
           render={({ field, fieldState }) => (
@@ -111,7 +111,7 @@ export function AddressForm() {
           )}
         />
         <Controller
-          name="address.street"
+          name="street"
           control={control}
           defaultValue=""
           render={({ field, fieldState }) => (
@@ -128,7 +128,7 @@ export function AddressForm() {
           )}
         />
         <Controller
-          name="address.number"
+          name="number"
           control={control}
           defaultValue=""
           render={({ field, fieldState }) => (
@@ -146,7 +146,7 @@ export function AddressForm() {
       </Box>
 
       <Controller
-        name="address.district"
+        name="district"
         control={control}
         defaultValue=""
         render={({ field, fieldState }) => (
@@ -162,7 +162,7 @@ export function AddressForm() {
         )}
       />
       <Controller
-        name="address.complement"
+        name="complement"
         control={control}
         defaultValue=""
         render={({ field, fieldState }) => (
@@ -180,7 +180,7 @@ export function AddressForm() {
 
       <Box display="flex" gap={1}>
         <Controller
-          name="address.city"
+          name="city"
           control={control}
           defaultValue=""
           render={({ field, fieldState }) => (
@@ -196,7 +196,7 @@ export function AddressForm() {
           )}
         />
         <Controller
-          name="address.state"
+          name="state"
           control={control}
           defaultValue=""
           render={({ field, fieldState }) => (
@@ -213,7 +213,7 @@ export function AddressForm() {
         />
       </Box>
       <Controller
-        name="address.country"
+        name="country"
         control={control}
         defaultValue=""
         render={({ field, fieldState }) => (
@@ -230,7 +230,7 @@ export function AddressForm() {
       />
       <Box pl={1} display="flex" flexDirection="column" maxWidth={500}>
         <Controller
-          name="address.exactLocation"
+          name="exactLocation"
           control={control}
           defaultValue={false}
           render={({ field }) => (
@@ -245,9 +245,9 @@ export function AddressForm() {
             </Tooltip>
           )}
         />
-        {errors.address?.exactLocation && (
+        {errors?.exactLocation && (
           <Typography variant="caption" color="error">
-            {errors.address.exactLocation.message}
+            {errors.exactLocation.message}
           </Typography>
         )}
         <Controller

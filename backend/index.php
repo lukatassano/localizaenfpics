@@ -1,6 +1,10 @@
 <?php
 include './controllers/NurseController.php';
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 $method = $_SERVER['REQUEST_METHOD'];
 $nurseController = new NurseController();
 $requestUri = $_SERVER['REQUEST_URI'];

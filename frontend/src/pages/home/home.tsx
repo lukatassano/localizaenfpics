@@ -1,7 +1,7 @@
-import { Map } from "../../Components/map";
-import { PrivacyPolicyDialog } from "../../Components/politica-privacidade";
-import { SelectedNurse } from "../../Components/selected-nurse";
-import { SelectedNurses } from "../../Components/selected-nurses";
+import { Map } from "../../components/map";
+import { PrivacyPolicyDialog } from "../../components/politica-privacidade";
+import { SelectedNurse } from "../../components/selected-nurse";
+import { SelectedNurses } from "../../components/selected-nurses";
 import { Form } from "../form/form";
 import { Container } from "./styles";
 

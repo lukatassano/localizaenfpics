@@ -2,7 +2,7 @@ FROM nimmis/apache-php5
 
 WORKDIR /home/nimmis
 
-COPY ./backend .
+COPY . .
 
 EXPOSE 80
 

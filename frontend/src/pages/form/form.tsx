@@ -34,14 +34,14 @@ import {
   handleNextAtom,
   handleResetAtom,
 } from "../../atoms/stepper";
-import { db } from "../../firebase.config";
-import { CompleteFormType, completeSchema } from "../../types/form";
+import { db } from "../../api/firebase.config";
 import { searchLocationByAddress } from "../../utils/search-location";
 import { AddressForm } from "./components/address-form";
 import { PersonalForm } from "./components/personal-form";
 import { SpecialtiesForm } from "./components/specialties-form";
 import { privacyPolicyOpenAtom } from "../../atoms/politica-privacidade";
 import { mutate } from "swr";
+import { formSchema, FormType } from "../../types/form";
 
 const steps = ["Dados pessoais", "Especialidade", "Endereço"];
 
@@ -63,8 +63,8 @@ export const Form = () => {
 
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const methods = useForm<CompleteFormType>({
-    resolver: zodResolver(completeSchema),
+  const methods = useForm<FormType>({
+    resolver: zodResolver(formSchema),
   });
 
   const { handleSubmit, trigger, reset } = methods;
@@ -94,8 +94,8 @@ export const Form = () => {
     setDialogMessageOpen(false);
   }
 
-  async function searchCoords(form: CompleteFormType) {
-    const result = await searchLocationByAddress(form.address);
+  async function searchCoords(form: FormType) {
+    const result = await searchLocationByAddress(form);
 
     if (!result) {
       setSnackbarOpen(true);
@@ -107,7 +107,7 @@ export const Form = () => {
     return result;
   }
 
-  async function handleSubmitForm(form: CompleteFormType) {
+  async function handleSubmitForm(form: FormType) {
     setIsLoading(true);
 
     const result = dialogMessageOpen
@@ -115,13 +115,15 @@ export const Form = () => {
       : await searchCoords(form);
 
     const { lat, lon } = result;
-    const newNurse: CompleteFormType = {
+    const newNurse: FormType = {
       ...form,
       uuid: v4(),
-      address: {
-        ...form.address,
-        coordinates: [parseFloat(lat), parseFloat(lon)],
-      },
+      latitude: lat,
+      longitude: lon,
+      // address: {
+      // ...form.address,
+      // coordinates: [parseFloat(lat), parseFloat(lon)],
+      // },
     };
 
     set(ref(db, `nurses/${newNurse.uuid}`), newNurse);

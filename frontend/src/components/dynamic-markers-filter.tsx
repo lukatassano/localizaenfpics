@@ -8,7 +8,7 @@ import {
   specialtiesFilterAtom,
 } from "../atoms/nurse";
 import { listNurses } from "../service/nurse";
-import { CompleteFormType } from "../types/form";
+import { FormType } from "../types/form";
 
 export const coordsAtom = atom({
   northEast: {
@@ -31,12 +31,12 @@ export function DynamicMarkersFilter() {
   const mMap = useMap();
 
   const updateFilteredNurses = () => {
-    let filteredNurses: CompleteFormType[] = [];
+    let filteredNurses: FormType[] = [];
 
     if (selectedCoords !== undefined) {
-      filteredNurses = (nurses || []).filter((nurse) => {
+      filteredNurses = (nurses?.data || []).filter((nurse) => {
         const { lat, lng } = selectedCoords;
-        const [nurseLat, nurseLng] = nurse.address.coordinates || [-1, -1];
+        const [nurseLat, nurseLng] = nurse.coordinates || [-1, -1];
 
         return (
           lat.toPrecision(4) === nurseLat.toPrecision(4) &&
@@ -48,11 +48,10 @@ export function DynamicMarkersFilter() {
       const northEast = bounds.getNorthEast();
       const southWest = bounds.getSouthWest();
 
-      filteredNurses = (nurses || []).filter((nurse) => {
-        const coords = nurse.address.coordinates;
-        if (coords) {
-          const lat = coords[0];
-          const lng = coords[1];
+      filteredNurses = (nurses?.data || []).filter((nurse) => {
+        if (nurse.latitude && nurse.longitude) {
+          const lat = Number(nurse.latitude);
+          const lng = Number(nurse.longitude);
 
           const inLat = northEast.lat > lat && lat > southWest.lat;
           const inLng = northEast.lng > lng && lng > southWest.lng;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const personalDataSchema = z.object({
+export const formSchema = z.object({
   uuid: z.string().optional(),
   name: z.string().min(1, "Nome é obrigatório"),
   cpf: z.string()
@@ -17,10 +17,8 @@ export const personalDataSchema = z.object({
   specialties: z.array(z.string()).min(1, "Selecione pelo menos uma especialidade").default([]),
   lgpd: z.boolean().default(false).refine(val => val === true, {
     message: "Você precisa concordar com os termos para enviar"
-  })
-});
+  }),
 
-export const addressSchema = z.object({
   zipCode: z
     .string()
     .min(9, "CEP é obrigatório"),
@@ -33,13 +31,9 @@ export const addressSchema = z.object({
   country: z.string().min(1, "País é obrigatório"),
   number: z.string(),
   coordinates: z.array(z.number()).optional(),
+  latitude: z.string().optional(),
+  longitude: z.string().optional(),
   exactLocation: z.boolean().default(false),
-})
+});
 
-export const completeSchema = personalDataSchema.extend({
-  address: addressSchema
-})
-
-export type PersonalDataFormType = z.infer<typeof personalDataSchema>;
-export type AddressFormType = z.infer<typeof addressSchema>;
-export type CompleteFormType = z.infer<typeof completeSchema>;
+export type FormType = z.infer<typeof formSchema>;
