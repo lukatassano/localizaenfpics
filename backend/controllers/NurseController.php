@@ -33,7 +33,8 @@ class NurseController {
             $response = $this->buildNurseResponse((int)$insertedId, $preparedData);
         }
     
-        echo json_encode($response);
+        $this->outputJson($response);
+        // echo json_encode($response);
     }
 
     private function buildQueryForNurseById($id) {
@@ -94,6 +95,9 @@ class NurseController {
     private function insertNurse($data) {
         global $conn;
         
+        $lgpdValue = $data['lgpd'] ? 1 : 0;
+        $exactLocation = $data['exactLocation'] ? 1 : 0;
+
         $sql = "INSERT INTO nurse (
                     uuid, name, cpf, phone, email, instagram, facebook, twitter, linkedin, 
                     birthday, gender, coren, specialties, lgpd, zipCode, type, street, district, 
@@ -112,7 +116,7 @@ class NurseController {
                     '{$data['gender']}', 
                     '{$data['coren']}', 
                     '{$data['specialties']}', 
-                    {$data['lgpd']}, 
+                    {$lgpdValue}, 
                     '{$data['zipCode']}', 
                     '{$data['type']}', 
                     '{$data['street']}', 
@@ -124,7 +128,7 @@ class NurseController {
                     '{$data['number']}', 
                     {$data['latitude']}, 
                     {$data['longitude']}, 
-                    {$data['exactLocation']}
+                    {$exactLocation}
                 )";
     
         if ($conn->query($sql) === TRUE) {
@@ -137,70 +141,116 @@ class NurseController {
     private function updateNurse($id, $data) {
         global $conn;
         
-        $sql = "UPDATE nurse SET 
-                    uuid = '{$data['uuid']}', 
-                    name = '{$data['name']}', 
-                    phone = '{$data['phone']}', 
-                    email = '{$data['email']}', 
-                    instagram = '{$data['instagram']}', 
-                    facebook = '{$data['facebook']}', 
-                    twitter = '{$data['twitter']}', 
-                    linkedin = '{$data['linkedin']}', 
-                    birthday = '{$data['birthday']}', 
-                    gender = '{$data['gender']}', 
-                    coren = '{$data['coren']}', 
-                    specialties = '{$data['specialties']}', 
-                    lgpd = {$data['lgpd']}, 
-                    zipCode = '{$data['zipCode']}', 
-                    type = '{$data['type']}', 
-                    street = '{$data['street']}', 
-                    district = '{$data['district']}', 
-                    complement = '{$data['complement']}', 
-                    city = '{$data['city']}', 
-                    state = '{$data['state']}', 
-                    country = '{$data['country']}', 
-                    number = '{$data['number']}', 
-                    latitude = {$data['latitude']}, 
-                    longitude = {$data['longitude']}, 
-                    exactLocation = {$data['exactLocation']} 
-                WHERE id = $id";
+        $setClause = $this->buildSetClause($data);
+        $sql = "UPDATE nurse SET $setClause WHERE id = $id";
     
         if ($conn->query($sql) === FALSE) {
             die(json_encode(["message" => "Error updating nurse record: " . $conn->error]));
         }
     }
+
+    private function buildSetClause($data) {
+        $lgpdValue = $data['lgpd'] ? 1 : 0;
+        $exactLocation = $data['exactLocation'] ? 1 : 0;
+
+        $setClauses = [
+            "uuid" => "'" . stripslashes($data['uuid']) . "'",
+            "name" => "'" . stripslashes($data['name']) . "'",
+            "phone" => "'" . stripslashes($data['phone']) . "'",
+            "email" => "'" . stripslashes($data['email']) . "'",
+            "instagram" => "'" . stripslashes($data['instagram']) . "'",
+            "facebook" => "'" . stripslashes($data['facebook']) . "'",
+            "twitter" => "'" . stripslashes($data['twitter']) . "'",
+            "linkedin" => "'" . stripslashes($data['linkedin']) . "'",
+            "birthday" => "'" . stripslashes($data['birthday']) . "'",
+            "gender" => "'" . stripslashes($data['gender']) . "'",
+            "coren" => "'" . stripslashes($data['coren']) . "'",
+            "specialties" => "'" . stripslashes($data['specialties']) . "'",
+            "zipCode" => "'" . stripslashes($data['zipCode']) . "'",
+            "lgpd" => $lgpdValue,
+            "type" => "'" . stripslashes($data['type']) . "'",
+            "street" => "'" . stripslashes($data['street']) . "'",
+            "district" => "'" . stripslashes($data['district']) . "'",
+            "complement" => "'" . stripslashes($data['complement']) . "'",
+            "city" => "'" . stripslashes($data['city']) . "'",
+            "state" => "'" . stripslashes($data['state']) . "'",
+            "country" => "'" . stripslashes($data['country']) . "'",
+            "number" => "'" . stripslashes($data['number']) . "'",
+            "latitude" => $data['latitude'],
+            "longitude" => $data['longitude'],
+            "exactLocation" => $exactLocation
+        ];
+
+        $setClauseString = '';
+        foreach ($setClauses as $column => $value) {
+            $setClauseString .= "$column = $value, ";
+        }
+    
+        $setClauseString = rtrim($setClauseString, ', ');
+    
+        return $setClauseString;
+    }
     
     private function buildNurseResponse($id, $data) {
+        $specialties = json_decode(stripslashes($data['specialties']), true);
+        
+        $uuid = stripslashes($data['uuid']);
+        $name = stripslashes($data['name']);
+        $cpf = stripslashes($data['cpf']);
+        $phone = stripslashes($data['phone']);
+        $email = stripslashes($data['email']);
+        $instagram = stripslashes($data['instagram']);
+        $facebook = stripslashes($data['facebook']);
+        $twitter = stripslashes($data['twitter']);
+        $linkedin = stripslashes($data['linkedin']);
+        $birthday = stripslashes($data['birthday']);
+        $gender = stripslashes($data['gender']);
+        $coren = stripslashes($data['coren']);
+        $zipCode = stripslashes($data['zipCode']);
+        $type = stripslashes($data['type']);
+        $street = stripslashes($data['street']);
+        $district = stripslashes($data['district']);
+        $complement = stripslashes($data['complement']);
+        $city = stripslashes($data['city']);
+        $state = stripslashes($data['state']);
+        $country = stripslashes($data['country']);
+        $number = stripslashes($data['number']);
+    
+        $lgpd = $data['lgpd'] !== 'NULL' ? (boolean)$data['lgpd'] : null;
+        $latitude = $data['latitude'] !== 'NULL' ? (float)$data['latitude'] : null;
+        $longitude = $data['longitude'] !== 'NULL' ? (float)$data['longitude'] : null;
+        $exactLocation = $data['exactLocation'] !== 'NULL' ? (boolean)$data['exactLocation'] : null;
+    
         return [
             "id" => $id,
-            "uuid" => $data['uuid'],
-            "name" => $data['name'],
-            "cpf" => $data['cpf'],
-            "phone" => $data['phone'],
-            "email" => $data['email'],
-            "instagram" => $data['instagram'],
-            "facebook" => $data['facebook'],
-            "twitter" => $data['twitter'],
-            "linkedin" => $data['linkedin'],
-            "birthday" => $data['birthday'],
-            "gender" => $data['gender'],
-            "coren" => $data['coren'],
-            "specialties" => json_decode($data['specialties'], true),
-            "lgpd" => $data['lgpd'],
-            "zipCode" => $data['zipCode'],
-            "type" => $data['type'],
-            "street" => $data['street'],
-            "district" => $data['district'],
-            "complement" => $data['complement'],
-            "city" => $data['city'],
-            "state" => $data['state'],
-            "country" => $data['country'],
-            "number" => $data['number'],
-            "latitude" => $data['latitude'] !== 'NULL' ? (float)$data['latitude'] : null,
-            "longitude" => $data['longitude'] !== 'NULL' ? (float)$data['longitude'] : null,
-            "exactLocation" => $data['exactLocation']
+            "uuid" => $uuid,
+            "name" => $name,
+            "cpf" => $cpf,
+            "phone" => $phone,
+            "email" => $email,
+            "instagram" => $instagram,
+            "facebook" => $facebook,
+            "twitter" => $twitter,
+            "linkedin" => $linkedin,
+            "birthday" => $birthday,
+            "gender" => $gender,
+            "coren" => $coren,
+            "specialties" => $specialties,
+            "lgpd" => $lgpd,
+            "zipCode" => $zipCode,
+            "type" => $type,
+            "street" => $street,
+            "district" => $district,
+            "complement" => $complement,
+            "city" => $city,
+            "state" => $state,
+            "country" => $country,
+            "number" => $number,
+            "latitude" => $latitude,
+            "longitude" => $longitude,
+            "exactLocation" => $exactLocation
         ];
-    }
+    }    
 
     private function buildQueryForArea($params) {
         global $conn;
@@ -239,56 +289,23 @@ class NurseController {
     
     private function processQueryResults($result) {
         $nurses = [];
-        
         while ($row = $result->fetch_assoc()) {
-            foreach ($row as $key => $value) {
-                if (is_string($value)) {
-                    $row[$key] = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
-                }
-            }
-    
-            if (isset($row['specialties']) && !is_null($row['specialties'])) {
-                $specialties = json_decode($row['specialties'], true);
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    $row['specialties'] = $specialties;
-                } else {
-                    $row['specialties'] = null;
-                }
-            }
-    
-            $nurses[] = $row;
+            $nurses[] = $this->buildNurseResponse((int)$row['id'], $row);
         }
-    
         return $nurses;
     }
 
     private function processQueryResult($result) {
         if ($result->num_rows > 0) {
             $nurse = $result->fetch_assoc();
-    
-            foreach ($nurse as $key => $value) {
-                if (is_string($value)) {
-                    $nurse[$key] = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
-                }
-            }
-    
-            if (isset($nurse['specialties']) && !is_null($nurse['specialties'])) {
-                $specialties = json_decode($nurse['specialties'], true);
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    $nurse['specialties'] = $specialties;
-                } else {
-                    $nurse['specialties'] = null;
-                }
-            }
-    
-            return $nurse;
+            return $this->buildNurseResponse((int)$nurse['id'], $nurse);
         } else {
             return ["message" => "Nurse not found"];
         }
     }    
     
     private function outputJson($data) {
-        $json_output = json_encode($data);
+        $json_output = json_encode($data, JSON_UNESCAPED_UNICODE);
         
         if (json_last_error() !== JSON_ERROR_NONE) {
             die("Error encoding JSON: " . json_last_error_msg());

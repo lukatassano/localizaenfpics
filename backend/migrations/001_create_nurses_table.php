@@ -11,7 +11,7 @@ $up = function($conn) {
         facebook VARCHAR(255),
         twitter VARCHAR(255),
         linkedin VARCHAR(255),
-        birthday DATE,
+        birthday VARCHAR(50),
         gender VARCHAR(20),
         coren VARCHAR(80),
         specialties JSON,

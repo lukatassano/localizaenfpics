@@ -5,8 +5,11 @@ const http = backendURL.includes("localhost") ? "http://" : "https://"
 const backendPort = import.meta.env.VITE_BACKEND_PORT as string;
 
 const baseURL = `${http}${backendURL}:${backendPort}/api`
-console.log(baseURL);
 
 export const api = axios.create({
   baseURL 
 })
+
+export function fetcher(url: string) {
+  return api.get(url).then(response => response.data)
+}

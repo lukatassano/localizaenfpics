@@ -1,7 +1,7 @@
 import { Box, Chip, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
-import { CompleteFormType } from "../../../types/form";
 import { specialties } from "../../../data/specialties";
+import { FormType } from "../../../types/form";
 
 export function SpecialtiesForm() {
   const theme = useTheme();
@@ -10,7 +10,7 @@ export function SpecialtiesForm() {
   const {
     control,
     formState: { errors },
-  } = useFormContext<CompleteFormType>();
+  } = useFormContext<FormType>();
 
   return (
     <Box

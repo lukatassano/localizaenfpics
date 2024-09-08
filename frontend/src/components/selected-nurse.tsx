@@ -52,19 +52,17 @@ export function SelectedNurse() {
       return;
     }
 
-    const formattedAddress = formatAddress(selectedNurse.address);
+    const formattedAddress = formatAddress(selectedNurse);
     openMaps(formattedAddress);
   }
 
-  const showExactLocation = !!selectedNurse?.address.exactLocation;
+  const showExactLocation = !!selectedNurse?.exactLocation;
   const showSocialMedias =
     !!selectedNurse?.instagram || !!selectedNurse?.facebook;
 
-  const address = `${
-    selectedNurse?.address.type ? `${selectedNurse?.address.type} ` : ""
-  }${selectedNurse?.address.street} ${
-    showExactLocation ? selectedNurse?.address.number : ""
-  }`;
+  const address = `${selectedNurse?.type ? `${selectedNurse?.type} ` : ""}${
+    selectedNurse?.street
+  } ${showExactLocation ? selectedNurse?.number : ""}`;
 
   return (
     <Dialog
@@ -97,10 +95,10 @@ export function SelectedNurse() {
             <Typography noWrap>{selectedNurse?.phone}</Typography>
 
             <Typography color="GrayText">Bairro</Typography>
-            <Typography noWrap>{selectedNurse?.address.district}</Typography>
+            <Typography noWrap>{selectedNurse?.district}</Typography>
 
             <Typography color="GrayText">Cidade</Typography>
-            <Typography noWrap>{selectedNurse?.address.city}</Typography>
+            <Typography noWrap>{selectedNurse?.city}</Typography>
 
             {selectedNurse?.coren && (
               <>

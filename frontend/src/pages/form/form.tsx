@@ -21,7 +21,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { ref, set } from "firebase/database";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -34,7 +33,6 @@ import {
   handleNextAtom,
   handleResetAtom,
 } from "../../atoms/stepper";
-import { db } from "../../api/firebase.config";
 import { searchLocationByAddress } from "../../utils/search-location";
 import { AddressForm } from "./components/address-form";
 import { PersonalForm } from "./components/personal-form";
@@ -42,6 +40,7 @@ import { SpecialtiesForm } from "./components/specialties-form";
 import { privacyPolicyOpenAtom } from "../../atoms/politica-privacidade";
 import { mutate } from "swr";
 import { formSchema, FormType } from "../../types/form";
+import { saveNurse } from "../../service/nurse";
 
 const steps = ["Dados pessoais", "Especialidade", "Endereço"];
 
@@ -115,28 +114,43 @@ export const Form = () => {
       : await searchCoords(form);
 
     const { lat, lon } = result;
-    const newNurse: FormType = {
+
+    const nurseToSave = {
       ...form,
       uuid: v4(),
       latitude: lat,
       longitude: lon,
-      // address: {
-      // ...form.address,
-      // coordinates: [parseFloat(lat), parseFloat(lon)],
-      // },
     };
 
-    set(ref(db, `nurses/${newNurse.uuid}`), newNurse);
-    setNurses((state) => {
-      return [...state, newNurse];
-    });
+    saveNurse(nurseToSave)
+      .then(({ data }) => {
+        if (data) {
+          setNurses((state) => {
+            return [...state, data];
+          });
+          handleReset();
+          setFormOpen(false);
+          handleCloseDialogMessage();
+          reset({});
+          mutate(["nurses"]);
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
 
-    handleReset();
-    setFormOpen(false);
-    handleCloseDialogMessage();
-    reset({});
-    setIsLoading(false);
-    mutate(["nurses"]);
+    // if (savedNurse) {
+    //   setNurses((state) => {
+    //     return [...state, savedNurse];
+    //   });
+    // }
+
+    // handleReset();
+    // setFormOpen(false);
+    // handleCloseDialogMessage();
+    // reset({});
+    // setIsLoading(false);
+    // mutate(["nurses"]);
   }
 
   useEffect(() => {

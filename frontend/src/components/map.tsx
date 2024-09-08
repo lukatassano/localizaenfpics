@@ -1,36 +1,9 @@
-import { Box, Fade, LinearProgress, Typography } from "@mui/material";
-import { useAtom } from "jotai";
-import L, { LatLngExpression, LeafletMouseEvent } from "leaflet";
-import { MapContainer, Marker, TileLayer, Tooltip } from "react-leaflet";
-import MarkerClusterGroup from "react-leaflet-cluster";
-import useSWR from "swr";
-import {
-  filteredNursesAtom,
-  selectedCoordsAtom,
-  selectedNurseAtom,
-  specialtiesFilterAtom,
-} from "../atoms/nurse";
-import { listNurses } from "../service/nurse";
-import { DynamicMarkersFilter } from "./dynamic-markers-filter";
+import { Box, Typography } from "@mui/material";
+import { MapContainer } from "react-leaflet";
 import "./map.css";
-
-const createClusterCustomIcon = function (cluster: any) {
-  return L.divIcon({
-    html: `<span>${cluster.getChildCount()}</span>`,
-    className: "custom-marker-cluster",
-    iconSize: L.point(33, 33, true),
-  });
-};
+import { Markers } from "./markers";
 
 export function Map() {
-  const { data: nurses, isLoading } = useSWR(["nurses"], listNurses, {
-    refreshInterval: 120 * 1000,
-  });
-  const [, setSelectedCoords] = useAtom(selectedCoordsAtom);
-  const [specialtiesFilter] = useAtom(specialtiesFilterAtom);
-  const [, setSelectedNurse] = useAtom(selectedNurseAtom);
-  const [filteredNurses] = useAtom(filteredNursesAtom);
-
   return (
     <Box
       flex={1}
@@ -53,43 +26,7 @@ export function Map() {
           borderRadius: 8,
         }}
       >
-        <Fade in={isLoading}>
-          <LinearProgress sx={{ width: "100%", zIndex: 2000 }} />
-        </Fade>
-        <DynamicMarkersFilter />
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <MarkerClusterGroup
-          singleMarkerMode
-          iconCreateFunction={createClusterCustomIcon}
-          removeOutsideVisibleBounds
-          onClick={(e: LeafletMouseEvent) => setSelectedCoords(e.latlng)}
-          showCoverageOnHover={true}
-        >
-          {(specialtiesFilter.length ? filteredNurses : nurses?.data || []).map(
-            (nurse) => (
-              <Box key={nurse.uuid}>
-                <Marker
-                  position={
-                    [
-                      Number(nurse.latitude),
-                      Number(nurse.longitude),
-                    ] as LatLngExpression
-                  }
-                  eventHandlers={{
-                    click: () => setSelectedNurse(nurse),
-                  }}
-                >
-                  <Tooltip direction="bottom" offset={[0, 20]} opacity={1}>
-                    {nurse.name}
-                  </Tooltip>
-                </Marker>
-              </Box>
-            )
-          )}
-        </MarkerClusterGroup>
+        <Markers />
       </MapContainer>
     </Box>
   );

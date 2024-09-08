@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const formSchema = z.object({
+  id: z.number().optional(),
   uuid: z.string().optional(),
   name: z.string().min(1, "Nome é obrigatório"),
   cpf: z.string()
@@ -37,3 +38,5 @@ export const formSchema = z.object({
 });
 
 export type FormType = z.infer<typeof formSchema>;
+
+export type Nurse = FormType;

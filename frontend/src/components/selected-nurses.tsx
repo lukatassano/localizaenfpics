@@ -64,10 +64,10 @@ export function SelectedNurses() {
                   {nurse.name}
                 </Typography>
                 <Typography variant="body2" noWrap>
-                  Rua: {nurse.address.street} {nurse.address.number}
+                  Rua: {nurse.street} {nurse.number}
                 </Typography>
                 <Typography variant="body2" noWrap>
-                  Bairro: {nurse.address.district}
+                  Bairro: {nurse.district}
                 </Typography>
               </CardContent>
               <CardActions>

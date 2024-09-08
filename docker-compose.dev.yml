@@ -17,9 +17,9 @@ services:
       - localizaenfpics_network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--password=root_password"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+      interval: 2s
+      timeout: 2s
+      retries: 7
 
   backend:
     build:
