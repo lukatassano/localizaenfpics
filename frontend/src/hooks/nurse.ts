@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import { fetcher } from "../api/api";
 import { Nurse } from "../types/form";
+import { isNumber } from "../utils/number";
 
 type Props = {
   coordinates: {
@@ -28,11 +29,8 @@ export function useNurses({ refreshInterval, coordinates }: Props) {
   }
 
   return useSWR<Nurse[]>(
-    doRequest ? `/nurses?${searchParams.toString()}` : undefined, fetcher, {
+    doRequest ? `/nurse?${searchParams.toString()}` : undefined, fetcher, {
     refreshInterval: refreshInterval || 0,
+    keepPreviousData: true,
   });
-}
-
-function isNumber(value: any) {
-  return typeof value === "number";
 }

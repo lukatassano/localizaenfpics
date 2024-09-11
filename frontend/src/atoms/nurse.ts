@@ -1,10 +1,9 @@
 import { atom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
 import { LatLng } from "leaflet";
-import { FormType } from "../types/form";
+import { Nurse } from "../types/form";
 
-export const nursesAtom = atomWithStorage<FormType[]>("nurses", [])
-export const filteredNursesAtom = atom<FormType[]>([])
+export const nursesAtom = atom<Nurse[]>([])
+export const filteredNursesAtom = atom<Nurse[]>([])
 export const specialtiesFilterAtom = atom<string[]>([])
-export const selectedNurseAtom = atom<FormType | undefined>(undefined);
+export const selectedNurseAtom = atom<Nurse | undefined>(undefined);
 export const selectedCoordsAtom = atom<LatLng | undefined>(undefined);

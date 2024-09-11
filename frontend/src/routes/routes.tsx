@@ -5,7 +5,7 @@ export function AppRoutes() {
   return (
     <Router>
       <Routes>
-        <Route index element={<Home />} />
+        <Route path="localizaenfpics/map" element={<Home />} />
       </Routes>
     </Router>
   );

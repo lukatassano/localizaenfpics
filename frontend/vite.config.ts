@@ -4,7 +4,9 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: "/localizaenfpics/map/",
   build: {
-    outDir: 'backend/dist',
+    assetsDir: '.',
+    outDir: 'dist',
   },
 })

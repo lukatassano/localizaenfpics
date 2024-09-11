@@ -9,18 +9,55 @@ import {
   Typography,
 } from "@mui/material";
 import { useAtom } from "jotai";
+import { useMemo } from "react";
 import {
-  filteredNursesAtom,
+  nursesAtom,
+  selectedCoordsAtom,
   selectedNurseAtom,
   specialtiesFilterAtom,
 } from "../atoms/nurse";
 import { specialties } from "../data/specialties";
+import { Nurse } from "../types/form";
 import { SelectedNursesContainer } from "./styles";
 
 export function SelectedNurses() {
-  const [filteredNurses] = useAtom(filteredNursesAtom);
+  const [nurses] = useAtom(nursesAtom);
+  const [selectedCoords] = useAtom(selectedCoordsAtom);
   const [, setSelectedNurse] = useAtom(selectedNurseAtom);
-  const [, setSpecialtiesFilter] = useAtom(specialtiesFilterAtom);
+  const [specialtiesFilter, setSpecialtiesFilter] = useAtom(
+    specialtiesFilterAtom
+  );
+
+  const filteredNurses = useMemo(() => {
+    return nurses.filter(filterBySelectedCoords).filter(filterBySpecialties);
+  }, [selectedCoords, specialtiesFilter, nurses]);
+
+  function filterBySelectedCoords(nurse: Nurse) {
+    if (selectedCoords && nurse.latitude && nurse.latitude) {
+      const [nurseLat, nurseLng] = [
+        Number(nurse.latitude),
+        Number(nurse.longitude),
+      ];
+      const { lat, lng } = selectedCoords;
+
+      return (
+        lat.toPrecision(4) === nurseLat.toPrecision(4) &&
+        lng.toPrecision(4) === nurseLng.toPrecision(4)
+      );
+    }
+
+    return true;
+  }
+
+  function filterBySpecialties(nurse: Nurse) {
+    if (specialtiesFilter.length > 0) {
+      return (nurse.specialties || []).some((specialty) =>
+        specialtiesFilter.includes(specialty)
+      );
+    }
+
+    return true;
+  }
 
   return (
     <SelectedNursesContainer

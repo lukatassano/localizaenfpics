@@ -31,7 +31,6 @@ export const formSchema = z.object({
   state: z.string().min(1, "Estado é obrigatório"),
   country: z.string().min(1, "País é obrigatório"),
   number: z.string(),
-  coordinates: z.array(z.number()).optional(),
   latitude: z.string().optional(),
   longitude: z.string().optional(),
   exactLocation: z.boolean().default(false),

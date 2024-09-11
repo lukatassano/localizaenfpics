@@ -1,7 +1,7 @@
 import { Box, Fade, LinearProgress } from "@mui/material";
-import { useAtom } from "jotai";
-import L, { LatLngExpression } from "leaflet";
-import { useEffect, useMemo, useState } from "react";
+import { useSetAtom } from "jotai";
+import L, { LatLngExpression, LeafletMouseEvent } from "leaflet";
+import { useEffect, useState } from "react";
 import {
   Marker,
   TileLayer,
@@ -11,13 +11,11 @@ import {
 } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import {
-  filteredNursesAtom,
+  nursesAtom,
   selectedCoordsAtom,
   selectedNurseAtom,
-  specialtiesFilterAtom,
 } from "../atoms/nurse";
 import { useNurses } from "../hooks/nurse";
-import { Nurse } from "../types/form";
 
 const TWO_MINUTES = 2 * (60 * 1000);
 
@@ -32,7 +30,10 @@ const createClusterCustomIcon = function (cluster: any) {
 export function Markers() {
   const map = useMap();
 
-  const [nurses, setNurses] = useState<Nurse[]>([]);
+  const setNurses = useSetAtom(nursesAtom);
+  const setSelectedCoords = useSetAtom(selectedCoordsAtom);
+  const setSelectedNurse = useSetAtom(selectedNurseAtom);
+
   const [northEastLat, setNorthEastLat] = useState<number | undefined>(
     undefined
   );
@@ -47,6 +48,7 @@ export function Markers() {
   );
 
   function updateFilteredNurses() {
+    setSelectedCoords(undefined);
     const bounds = map.getBounds();
     const northEast = bounds.getNorthEast();
     const southWest = bounds.getSouthWest();
@@ -72,36 +74,14 @@ export function Markers() {
     southWestLng,
   };
 
-  const { data, isLoading } = useNurses({
+  const { data: nurses, isLoading } = useNurses({
     coordinates,
     refreshInterval: TWO_MINUTES,
   });
 
-  useMemo(() => {
-    if (data) {
-      setNurses(data);
-    }
-  }, [data]);
-
-  const [, setSelectedCoords] = useAtom(selectedCoordsAtom);
-  const [specialtiesFilter] = useAtom(specialtiesFilterAtom);
-  const [, setSelectedNurse] = useAtom(selectedNurseAtom);
-  const [filteredNurses, setFilteredNurses] = useAtom(filteredNursesAtom);
-
   useEffect(() => {
-    if (specialtiesFilter.length > 0) {
-      const filtered = filteredNurses.filter((nurse) =>
-        (nurse.specialties || []).some((specialty) =>
-          specialtiesFilter.includes(specialty)
-        )
-      );
-
-      setFilteredNurses(filtered);
-      return;
-    }
-
-    setFilteredNurses(nurses);
-  }, [specialtiesFilter, nurses]);
+    setNurses(nurses || []);
+  }, [nurses]);
 
   return (
     <>
@@ -117,12 +97,12 @@ export function Markers() {
         singleMarkerMode
         iconCreateFunction={createClusterCustomIcon}
         removeOutsideVisibleBounds
-        // onClick={(e: LeafletMouseEvent) => {
-        //   setSelectedCoords(e.latlng);
-        // }}
+        onClick={(e: LeafletMouseEvent) => {
+          setSelectedCoords(e.latlng);
+        }}
         showCoverageOnHover={true}
       >
-        {filteredNurses.map((nurse) => (
+        {(nurses || []).map((nurse) => (
           <Box key={nurse.id}>
             <Marker
               position={
