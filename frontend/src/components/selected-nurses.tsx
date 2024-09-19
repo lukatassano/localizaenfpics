@@ -17,7 +17,10 @@ import {
   specialtiesFilterAtom,
 } from "../atoms/nurse";
 import { specialties } from "../data/specialties";
-import { Nurse } from "../types/form";
+import {
+  filterBySelectedCoords,
+  filterBySpecialties,
+} from "../utils/nurse-filters";
 import { SelectedNursesContainer } from "./styles";
 
 export function SelectedNurses() {
@@ -29,35 +32,10 @@ export function SelectedNurses() {
   );
 
   const filteredNurses = useMemo(() => {
-    return nurses.filter(filterBySelectedCoords).filter(filterBySpecialties);
+    return nurses
+      .filter(filterBySelectedCoords(selectedCoords))
+      .filter(filterBySpecialties(specialtiesFilter));
   }, [selectedCoords, specialtiesFilter, nurses]);
-
-  function filterBySelectedCoords(nurse: Nurse) {
-    if (selectedCoords && nurse.latitude && nurse.latitude) {
-      const [nurseLat, nurseLng] = [
-        Number(nurse.latitude),
-        Number(nurse.longitude),
-      ];
-      const { lat, lng } = selectedCoords;
-
-      return (
-        lat.toPrecision(4) === nurseLat.toPrecision(4) &&
-        lng.toPrecision(4) === nurseLng.toPrecision(4)
-      );
-    }
-
-    return true;
-  }
-
-  function filterBySpecialties(nurse: Nurse) {
-    if (specialtiesFilter.length > 0) {
-      return (nurse.specialties || []).some((specialty) =>
-        specialtiesFilter.includes(specialty)
-      );
-    }
-
-    return true;
-  }
 
   return (
     <SelectedNursesContainer
@@ -100,11 +78,11 @@ export function SelectedNurses() {
                 >
                   {nurse.name}
                 </Typography>
-                <Typography variant="body2" noWrap>
-                  Rua: {nurse.street} {nurse.number}
+                <Typography variant="body2">
+                  {nurse.street}, {nurse.number} - {nurse.district}
                 </Typography>
-                <Typography variant="body2" noWrap>
-                  Bairro: {nurse.district}
+                <Typography variant="body2">
+                  {nurse.city} - {nurse.state}
                 </Typography>
               </CardContent>
               <CardActions>

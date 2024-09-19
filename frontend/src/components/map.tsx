@@ -14,8 +14,14 @@ export function Map() {
       gap={2}
       p={4}
     >
-      <Typography variant="h4" sx={{ fontFamily: "Raleway" }}>
-        Localiza Enfermeiros PICS
+      <Typography
+        sx={{
+          fontFamily: "Raleway",
+          fontSize: { xs: "1.25rem", md: "2rem" },
+        }}
+      >
+        Observatório de Enfermeiras de Práticas Integrativas e Complementares em
+        Saúde
       </Typography>
       <MapContainer
         center={[-17.582692, -54.751349]}

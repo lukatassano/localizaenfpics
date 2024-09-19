@@ -1,7 +1,7 @@
 import { Box, Fade, LinearProgress } from "@mui/material";
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import L, { LatLngExpression, LeafletMouseEvent } from "leaflet";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Marker,
   TileLayer,
@@ -14,8 +14,10 @@ import {
   nursesAtom,
   selectedCoordsAtom,
   selectedNurseAtom,
+  specialtiesFilterAtom,
 } from "../atoms/nurse";
 import { useNurses } from "../hooks/nurse";
+import { filterBySpecialties } from "../utils/nurse-filters";
 
 const TWO_MINUTES = 2 * (60 * 1000);
 
@@ -30,8 +32,10 @@ const createClusterCustomIcon = function (cluster: any) {
 export function Markers() {
   const map = useMap();
 
-  const setNurses = useSetAtom(nursesAtom);
-  const setSelectedCoords = useSetAtom(selectedCoordsAtom);
+  const [nurses, setNurses] = useAtom(nursesAtom);
+  const [selectedCoords, setSelectedCoords] = useAtom(selectedCoordsAtom);
+  const [specialtiesFilter] = useAtom(specialtiesFilterAtom);
+
   const setSelectedNurse = useSetAtom(selectedNurseAtom);
 
   const [northEastLat, setNorthEastLat] = useState<number | undefined>(
@@ -74,14 +78,18 @@ export function Markers() {
     southWestLng,
   };
 
-  const { data: nurses, isLoading } = useNurses({
+  const { data: nursesResponse, isLoading } = useNurses({
     coordinates,
     refreshInterval: TWO_MINUTES,
   });
 
   useEffect(() => {
-    setNurses(nurses || []);
-  }, [nurses]);
+    setNurses(nursesResponse || []);
+  }, [nursesResponse]);
+
+  const filteredNurses = useMemo(() => {
+    return nurses.filter(filterBySpecialties(specialtiesFilter));
+  }, [selectedCoords, specialtiesFilter, nurses]);
 
   return (
     <>
@@ -102,7 +110,7 @@ export function Markers() {
         }}
         showCoverageOnHover={true}
       >
-        {(nurses || []).map((nurse) => (
+        {filteredNurses.map((nurse) => (
           <Box key={nurse.id}>
             <Marker
               position={

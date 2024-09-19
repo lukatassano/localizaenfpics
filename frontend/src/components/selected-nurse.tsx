@@ -17,11 +17,11 @@ import {
 import { useAtom } from "jotai";
 import { selectedNurseAtom } from "../atoms/nurse";
 import { formatAddress } from "../utils/format-address";
-import { openWhatsApp } from "../utils/whatsapp";
-import { call } from "../utils/phone";
-import { openMaps } from "../utils/maps";
-import { SelectedNurseBox } from "./styles";
 import { isValidURL } from "../utils/is-valid-url";
+import { openMaps } from "../utils/maps";
+import { call } from "../utils/phone";
+import { openWhatsApp } from "../utils/whatsapp";
+import { SelectedNurseBox } from "./styles";
 
 export function SelectedNurse() {
   const [selectedNurse, setSelectedNurse] = useAtom(selectedNurseAtom);

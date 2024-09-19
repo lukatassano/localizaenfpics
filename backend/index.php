@@ -4,7 +4,6 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header('Content-Type: application/json; charset=utf-8');
 
-$method = $_SERVER['REQUEST_METHOD'];
 $requestUri = $_SERVER['REQUEST_URI'];
 
 $frontendBuildPath = './';
@@ -22,4 +21,6 @@ if ($requestUri === '/localizaenfpics/') {
     }
 }
 
+http_response_code(404);
+echo json_encode(["message" => "Resource not found"]);
 ?>

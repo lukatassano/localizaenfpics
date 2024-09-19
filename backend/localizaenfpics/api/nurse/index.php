@@ -10,11 +10,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 $nurseController = new NurseController();
 $requestUri = $_SERVER['REQUEST_URI'];
 
-// Ajuste da verificação da URI para o novo caminho
-if (strpos($requestUri, '/localizaenfpics/api') === 0 && strpos($requestUri, '/nurse') !== false) {
-    // Atualize a substituição para refletir o novo caminho base
-    $endpoint = str_replace('/localizaenfpics/api/nurse', '', $requestUri);
-
+if (strpos($requestUri, '/api') === 0 && strpos($requestUri, '/nurse') !== false) {
     if ($method == 'GET') {
         if (isset($_GET['id'])) {
             $nurseController->getNurseById($_GET['id']);
