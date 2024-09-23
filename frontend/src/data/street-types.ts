@@ -1,8 +1,9 @@
 export const streetTypes = [
+  "Rua",
+  "Avenida",
   "Aeroporto",
   "Alameda",
   "Área",
-  "Avenida",
   "Campo",
   "Chácara",
   "Colônia",
@@ -31,7 +32,6 @@ export const streetTypes = [
   "Recanto",
   "Residencial",
   "Rodovia",
-  "Rua",
   "Setor",
   "Sítio",
   "Travessa",

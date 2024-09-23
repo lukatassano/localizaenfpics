@@ -93,7 +93,7 @@ export function AddressForm() {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Tipo"
+                  label="Rua/Avenida"
                   variant="outlined"
                   error={!!fieldState?.error}
                   helperText={fieldState.error?.message}

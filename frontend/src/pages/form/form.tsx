@@ -264,17 +264,8 @@ export const Form = () => {
                 <DialogContent>
                   <DialogContentText>
                     Parece que não conseguimos encontrar o endereço que você
-                    forneceu. Por favor, escolha uma das opções abaixo:
-                  </DialogContentText>
-                  <DialogContentText>
-                    1. <strong>Revisar Endereço:</strong> Verifique e corrija o
-                    endereço informado. Pode haver um erro de digitação ou algum
-                    dado faltando.
-                  </DialogContentText>
-                  <DialogContentText>
-                    2. <strong>Enviar Mesmo Assim:</strong> Envie o endereço da
-                    forma como está. Tentaremos localizar manualmente e
-                    retornaremos com uma resposta em até 24 horas.
+                    forneceu. Verifique o endereço informado, pode haver um erro
+                    de digitação ou algum dado faltando.
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -287,7 +278,7 @@ export const Form = () => {
                     Revisar Endereço
                   </Button>
 
-                  <LoadingButton
+                  {/* <LoadingButton
                     loading={isLoading}
                     type="submit"
                     variant="contained"
@@ -296,7 +287,7 @@ export const Form = () => {
                     color="primary"
                   >
                     Enviar Mesmo Assim
-                  </LoadingButton>
+                  </LoadingButton> */}
                 </DialogActions>
               </Dialog>
             </Box>
